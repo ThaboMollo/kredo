@@ -9,4 +9,13 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('api/health')
+  getHealth() {
+    return {
+      status: 'ok',
+      service: 'kredo-api',
+      timestamp: new Date().toISOString(),
+    };
+  }
 }

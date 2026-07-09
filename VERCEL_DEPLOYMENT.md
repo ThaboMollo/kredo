@@ -17,7 +17,7 @@ Framework Preset: Next.js
 Install Command: npm install
 Build Command: npm run build
 Output Directory: .next
-Node.js Version: 22.x
+Node.js Version: 24.x
 Production Domain: kalahari.co.za
 ```
 
@@ -43,7 +43,7 @@ Framework Preset: Other
 Install Command: npm install
 Build Command: npm run build
 Output Directory: dist/kredo-portal/browser
-Node.js Version: 22.x
+Node.js Version: 24.x
 Production Domain: kredo.kalahari.co.za
 ```
 
@@ -63,7 +63,7 @@ Vercel settings:
 Framework Preset: Other
 Install Command: npm install
 Build Command: npm run build
-Node.js Version: 22.x
+Node.js Version: 24.x
 Production Domain: api.kalahari.co.za
 ```
 
@@ -101,4 +101,4 @@ npm run build -w apps/marketing-site
 npx tsc -p apps/app-portal/tsconfig.app.json --noEmit
 ```
 
-The Angular production build should be verified under Node 22. Local Node 24 currently triggers an esbuild deadlock in this workspace.
+The Angular production build requires Node 24.x on Vercel because Vercel's Node 22 image may resolve below Angular 22's required `v22.22.3` patch level.
