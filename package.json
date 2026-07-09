@@ -1,0 +1,19 @@
+{
+  "name": "kredo-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "build:backend": "npm run build -w apps/backend",
+    "build:marketing": "npm run build -w apps/marketing-site",
+    "build:portal": "npm run build -w apps/app-portal",
+    "build:all": "npm run build --workspaces --if-present",
+    "dev:backend": "npm run start:dev -w apps/backend",
+    "dev:marketing": "npm run dev -w apps/marketing-site",
+    "dev:portal": "npm run start -w apps/app-portal",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down"
+  }
+}

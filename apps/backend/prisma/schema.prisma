@@ -1,0 +1,49 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum AccountType {
+  ASSET
+  LIABILITY
+  EQUITY
+  REVENUE
+  EXPENSE
+}
+
+enum EntryDirection {
+  DEBIT
+  CREDIT
+}
+
+model LedgerAccount {
+  id        String        @id @default(uuid())
+  code      String        @unique // e.g., "1000-RECEIVABLES", "2000-VOUCHER-LIABILITY"
+  name      String
+  type      AccountType
+  entries   LedgerEntry[]
+  createdAt DateTime      @default(now())
+}
+
+model LedgerTransaction {
+  id             String        @id @default(uuid())
+  idempotencyKey String        @unique
+  description    String
+  createdAt      DateTime      @default(now())
+  entries        LedgerEntry[]
+}
+
+model LedgerEntry {
+  id            String            @id @default(uuid())
+  transactionId String
+  transaction   LedgerTransaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
+  accountId     String
+  account       LedgerAccount     @relation(fields: [accountId], references: [id])
+  amount        BigInt            // Amount in integer cents
+  direction     EntryDirection
+  createdAt     DateTime          @default(now())
+}
