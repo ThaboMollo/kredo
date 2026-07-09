@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-repayments',
@@ -86,13 +87,13 @@ export class RepaymentsComponent implements OnInit {
   payNowMock() {
     this.paying.set(true);
     // 1. Get payment URL
-    this.http.post<any>('http://localhost:3000/api/v1/repayments/pay-now', {
+    this.http.post<any>(`${environment.apiBaseUrl}/api/v1/repayments/pay-now`, {
       consumerId: this.consumerId(),
       amount: 50000, // R500.00
     }).subscribe({
       next: (res) => {
         // 2. Call mock webhook instantly to clear payment
-        this.http.post('http://localhost:3000/api/v1/repayments/webhook/yoco', {
+        this.http.post(`${environment.apiBaseUrl}/api/v1/repayments/webhook/yoco`, {
           consumerId: this.consumerId(),
           amount: 50000,
           paymentRef: res.paymentRef,

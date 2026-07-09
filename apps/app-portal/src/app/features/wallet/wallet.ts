@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 interface Voucher {
   id: string;
@@ -161,7 +162,7 @@ export class WalletComponent implements OnInit {
 
   private fetchLimits() {
     // 1. Fetch Plan details to set limit
-    this.http.get<any>(`http://localhost:3000/api/v1/subscriptions/status?consumerId=${this.consumerId()}`).subscribe({
+    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/subscriptions/status?consumerId=${this.consumerId()}`).subscribe({
       next: (res) => {
         if (res.planCode === 'STUDENT_PREMIUM') {
           this.facilityLimit.set(350000);
@@ -199,7 +200,7 @@ export class WalletComponent implements OnInit {
       amount: valueCents,
     };
 
-    this.http.post<any>('http://localhost:3000/api/v1/credit/drawdowns', payload, { headers }).subscribe({
+    this.http.post<any>(`${environment.apiBaseUrl}/api/v1/credit/drawdowns`, payload, { headers }).subscribe({
       next: (res) => {
         this.vouchers.update((list) => [res.voucher, ...list]);
         this.utilisedLimit.update((val) => val + valueCents);
@@ -214,7 +215,7 @@ export class WalletComponent implements OnInit {
   }
 
   simulateRedeem(code: string) {
-    this.http.post('http://localhost:3000/api/v1/credit/drawdowns/redeem', {
+    this.http.post(`${environment.apiBaseUrl}/api/v1/credit/drawdowns/redeem`, {
       voucherCode: code,
     }).subscribe({
       next: () => {

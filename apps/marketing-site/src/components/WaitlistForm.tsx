@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import Cookies from 'js-cookie';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:3000';
+
 export default function WaitlistForm() {
   const [formData, setFormData] = useState({
     fullName: '',
@@ -44,7 +46,7 @@ export default function WaitlistForm() {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/v1/leads', {
+      const response = await fetch(`${API_BASE_URL}/api/v1/leads`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

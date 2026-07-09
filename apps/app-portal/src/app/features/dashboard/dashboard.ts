@@ -2,6 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -157,7 +158,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private fetchProfile() {
-    this.http.get<any>(`http://localhost:3000/api/v1/consumers/${this.consumerId()}`).subscribe({
+    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}`).subscribe({
       next: (res) => {
         this.consumerName.set(`${res.firstName} ${res.lastName}`);
       },
@@ -166,7 +167,7 @@ export class DashboardComponent implements OnInit {
 
   private fetchLedgerBalance() {
     // Check active subscription limits
-    this.http.get<any>(`http://localhost:3000/api/v1/subscriptions/status?consumerId=${this.consumerId()}`).subscribe({
+    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/subscriptions/status?consumerId=${this.consumerId()}`).subscribe({
       next: (res) => {
         if (res.planCode === 'STUDENT_PREMIUM') {
           this.facilityLimit.set(350000); // R3 500.00 limit
@@ -176,7 +177,7 @@ export class DashboardComponent implements OnInit {
   }
 
   triggerPayNow() {
-    this.http.post<any>('http://localhost:3000/api/v1/repayments/pay-now', {
+    this.http.post<any>(`${environment.apiBaseUrl}/api/v1/repayments/pay-now`, {
       consumerId: this.consumerId(),
       amount: this.outstandingReceivable(),
     }).subscribe({

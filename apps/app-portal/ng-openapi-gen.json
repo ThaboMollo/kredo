@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/ng-openapi-gen/ng-openapi-gen-schema.json",
-  "input": "http://localhost:3000/api/openapi.json",
+  "input": "https://api.kalahari.co.za/api/openapi.json",
   "output": "src/app/core/api",
   "ignoreUnusedModels": false
 }

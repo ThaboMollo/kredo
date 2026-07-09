@@ -2,6 +2,10 @@
   "name": "kredo-monorepo",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "npm@11.13.0",
+  "engines": {
+    "node": "22.x"
+  },
   "workspaces": [
     "apps/*"
   ],

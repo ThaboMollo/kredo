@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 type CreditView = 'AFFORDABILITY' | 'QUOTE' | 'SIGNING' | 'SUCCESS';
 
@@ -236,7 +237,7 @@ export class CreditComponent implements AfterViewInit {
       bureauObligations: Math.floor(Number(this.affordability.bureauObligations || 0) * 100),
     };
 
-    this.http.post<any>('http://localhost:3000/api/v1/credit/affordability', payload).subscribe({
+    this.http.post<any>(`${environment.apiBaseUrl}/api/v1/credit/affordability`, payload).subscribe({
       next: (res) => {
         this.agreementId.set(res.agreementId);
         this.approvedLimit.set(res.approvedLimit / 100); // Display in Rands
@@ -323,7 +324,7 @@ export class CreditComponent implements AfterViewInit {
       otpCode: this.signOtp,
     };
 
-    this.http.post<any>('http://localhost:3000/api/v1/credit/sign', payload).subscribe({
+    this.http.post<any>(`${environment.apiBaseUrl}/api/v1/credit/sign`, payload).subscribe({
       next: () => {
         this.goToView('SUCCESS');
         this.loading.set(false);

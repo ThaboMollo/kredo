@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 type SubView = 'PLANS' | 'BANK' | 'WAITING';
 
@@ -181,7 +182,7 @@ export class SubscriptionComponent {
       accountNumber: this.bankDetails.accountNumber,
     };
 
-    this.http.post<any>('http://localhost:3000/api/v1/subscriptions', payload).subscribe({
+    this.http.post<any>(`${environment.apiBaseUrl}/api/v1/subscriptions`, payload).subscribe({
       next: (res) => {
         this.mandateRef.set(res.mandateRef);
         this.view.set('WAITING');
@@ -210,7 +211,7 @@ export class SubscriptionComponent {
   }
 
   private checkStatus() {
-    this.http.get<any>(`http://localhost:3000/api/v1/subscriptions/status?consumerId=${this.consumerId()}`).subscribe({
+    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/subscriptions/status?consumerId=${this.consumerId()}`).subscribe({
       next: (res) => {
         if (res.status === 'ACTIVE' && res.mandateStatus === 'AUTHENTICATED') {
           this.stopPolling();
@@ -222,7 +223,7 @@ export class SubscriptionComponent {
 
   simulateMockApproval() {
     if (!this.mandateRef()) return;
-    this.http.post('http://localhost:3000/api/v1/subscriptions/webhook/debicheck', {
+    this.http.post(`${environment.apiBaseUrl}/api/v1/subscriptions/webhook/debicheck`, {
       mandateRef: this.mandateRef(),
       status: 'AUTHENTICATED',
     }).subscribe({

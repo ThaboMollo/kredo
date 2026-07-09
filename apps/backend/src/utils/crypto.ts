@@ -4,12 +4,16 @@ const ALGORITHM = 'aes-256-gcm';
 const DEFAULT_KEY = 'kredokredokredokredokredokredokr'; // 32 characters / bytes for dev fallback
 
 function getKey(): Buffer {
+  const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
   const envKey = process.env.ENCRYPTION_KEY;
   if (envKey) {
     if (envKey.length === 64) {
       return Buffer.from(envKey, 'hex');
     }
     return Buffer.alloc(32, envKey, 'utf8');
+  }
+  if (isProduction) {
+    throw new Error('ENCRYPTION_KEY must be configured for production deployments.');
   }
   return Buffer.from(DEFAULT_KEY, 'utf8');
 }

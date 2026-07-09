@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 interface Consent {
   id: string;
@@ -136,7 +137,7 @@ export class ProfileComponent implements OnInit {
   }
 
   private fetchProfile() {
-    this.http.get<any>(`http://localhost:3000/api/v1/consumers/${this.consumerId()}`).subscribe({
+    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}`).subscribe({
       next: (res) => {
         this.consumerName.set(`${res.firstName} ${res.lastName}`);
       },
@@ -144,7 +145,7 @@ export class ProfileComponent implements OnInit {
   }
 
   private fetchConsents() {
-    this.http.get<Consent[]>(`http://localhost:3000/api/v1/consumers/${this.consumerId()}/consents`).subscribe({
+    this.http.get<Consent[]>(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}/consents`).subscribe({
       next: (list) => {
         const marketing = list.find((c) => c.consentType === 'MARKETING');
         this.marketingGranted.set(marketing?.status === 'GRANTED');
@@ -155,7 +156,7 @@ export class ProfileComponent implements OnInit {
   toggleConsent(type: string) {
     const targetStatus = this.marketingGranted() ? 'WITHDRAWN' : 'GRANTED';
     
-    this.http.post(`http://localhost:3000/api/v1/consumers/${this.consumerId()}/consents`, {
+    this.http.post(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}/consents`, {
       consentType: type,
       status: targetStatus,
       version: 'v1.0',
@@ -169,7 +170,7 @@ export class ProfileComponent implements OnInit {
 
   downloadData() {
     this.exporting.set(true);
-    this.http.get(`http://localhost:3000/api/v1/consumers/${this.consumerId()}/data-export`).subscribe({
+    this.http.get(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}/data-export`).subscribe({
       next: (res) => {
         const blob = new Blob([JSON.stringify(res, null, 2)], { type: 'application/json' });
         const url = window.URL.createObjectURL(blob);

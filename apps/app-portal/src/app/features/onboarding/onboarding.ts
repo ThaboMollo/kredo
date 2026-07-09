@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AttributionService } from '../../core/services/attribution.service';
+import { environment } from '../../../environments/environment';
 
 type OnboardingStep = 'REGISTER' | 'OTP' | 'FICA' | 'STUDENT' | 'SUCCESS';
 
@@ -286,7 +287,7 @@ export class OnboardingComponent {
       ...attribution,
     };
 
-    this.http.post<any>('http://localhost:3000/api/v1/consumers', payload).subscribe({
+    this.http.post<any>(`${environment.apiBaseUrl}/api/v1/consumers`, payload).subscribe({
       next: (res) => {
         this.consumerId.set(res.id);
         sessionStorage.setItem('kredo_consumer_id', res.id);
@@ -303,7 +304,7 @@ export class OnboardingComponent {
   }
 
   private logConsent(consumerId: string, consentType: string, status: 'GRANTED' | 'WITHDRAWN') {
-    this.http.post(`http://localhost:3000/api/v1/consumers/${consumerId}/consents`, {
+    this.http.post(`${environment.apiBaseUrl}/api/v1/consumers/${consumerId}/consents`, {
       consentType,
       status,
       version: 'v1.0',
@@ -351,7 +352,7 @@ export class OnboardingComponent {
     // Simulate liveness detection wait
     setTimeout(() => {
       this.stopCamera();
-      this.http.post<any>(`http://localhost:3000/api/v1/consumers/${this.consumerId()}/kyc/fica`, {
+      this.http.post<any>(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}/kyc/fica`, {
         shouldSucceed: true,
       }).subscribe({
         next: () => {
@@ -372,7 +373,7 @@ export class OnboardingComponent {
 
   submitManualKyc() {
     this.loading.set(true);
-    this.http.post(`http://localhost:3000/api/v1/consumers/${this.consumerId()}/kyc/fica`, {
+    this.http.post(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}/kyc/fica`, {
       shouldSucceed: true,
     }).subscribe({
       next: () => {
@@ -393,7 +394,7 @@ export class OnboardingComponent {
     }
 
     this.error.set(null);
-    this.http.post(`http://localhost:3000/api/v1/consumers/${this.consumerId()}/student-verify`, {
+    this.http.post(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}/student-verify`, {
       academicEmail: this.studentEmail,
     }).subscribe({
       next: () => {
@@ -414,7 +415,7 @@ export class OnboardingComponent {
 
   submitStudentCard() {
     this.error.set(null);
-    this.http.post(`http://localhost:3000/api/v1/consumers/${this.consumerId()}/student-verify`, {
+    this.http.post(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}/student-verify`, {
       studentCardDocUrl: 'https://storage.kalahari.co.za/student-cards/card-mock.pdf',
     }).subscribe({
       next: () => {

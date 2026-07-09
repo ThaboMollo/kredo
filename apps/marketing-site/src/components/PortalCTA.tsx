@@ -3,13 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
+const PORTAL_APPLY_URL = `${process.env.NEXT_PUBLIC_PORTAL_BASE_URL ?? 'https://kredo.kalahari.co.za'}/apply`;
+
 interface PortalCTAProps {
   children: React.ReactNode;
   className?: string;
 }
 
 export default function PortalCTA({ children, className }: PortalCTAProps) {
-  const [href, setHref] = useState('https://kredo.kalahari.co.za/apply');
+  const [href, setHref] = useState(PORTAL_APPLY_URL);
 
   useEffect(() => {
     const rawCookie = Cookies.get('kalahari_ref');
@@ -26,7 +28,7 @@ export default function PortalCTA({ children, className }: PortalCTAProps) {
         
         const queryString = searchParams.toString();
         if (queryString) {
-          setHref(`https://kredo.kalahari.co.za/apply?${queryString}`);
+          setHref(`${PORTAL_APPLY_URL}?${queryString}`);
         }
       } catch (e) {
         console.error('Failed to parse attribution cookie data', e);
