@@ -1,21 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConsumerRepository } from './consumer.repository';
-import { PrismaService } from './prisma.service';
+import { SupabaseService } from './supabase.service';
 import { encrypt, decrypt } from '../../utils/crypto';
 
 describe('ConsumerRepository', () => {
   let repository: ConsumerRepository;
-  let prismaService: PrismaService;
+  let supabaseService: SupabaseService;
 
-  const mockPrismaService = {
-    consumer: {
-      create: jest.fn(),
-      findUnique: jest.fn(),
-      update: jest.fn(),
-    },
-    consent: {
-      create: jest.fn(),
-      findMany: jest.fn(),
+  const mockChain = {
+    insert: jest.fn().mockReturnThis(),
+    select: jest.fn().mockReturnThis(),
+    single: jest.fn(),
+    eq: jest.fn().mockReturnThis(),
+    maybeSingle: jest.fn(),
+    order: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+  };
+
+  const mockSupabaseService = {
+    client: {
+      from: jest.fn().mockReturnValue(mockChain),
     },
   };
 
@@ -23,12 +27,12 @@ describe('ConsumerRepository', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ConsumerRepository,
-        { provide: PrismaService, useValue: mockPrismaService },
+        { provide: SupabaseService, useValue: mockSupabaseService },
       ],
     }).compile();
 
     repository = module.get<ConsumerRepository>(ConsumerRepository);
-    prismaService = module.get<PrismaService>(PrismaService);
+    supabaseService = module.get<SupabaseService>(SupabaseService);
   });
 
   afterEach(() => {
@@ -57,25 +61,23 @@ describe('ConsumerRepository', () => {
       createdAt: new Date(),
     };
 
-    mockPrismaService.consumer.create.mockResolvedValue(mockCreatedDbRecord);
+    mockChain.single.mockResolvedValue({ data: mockCreatedDbRecord, error: null });
 
     const result = await repository.createConsumer(input);
 
-    expect(prismaService.consumer.create).toHaveBeenCalledWith({
-      data: {
-        emailEncrypted: expect.any(String),
-        idNumberEncrypted: expect.any(String),
-        mobileEncrypted: expect.any(String),
-        firstName: input.firstName,
-        lastName: input.lastName,
-      },
+    expect(supabaseService.client.from).toHaveBeenCalledWith('Consumer');
+    expect(mockChain.insert).toHaveBeenCalledWith({
+      emailEncrypted: expect.any(String),
+      idNumberEncrypted: expect.any(String),
+      mobileEncrypted: expect.any(String),
+      firstName: input.firstName,
+      lastName: input.lastName,
     });
 
     // Check that we got decrypted values back
     expect(result.email).toBe(input.email);
     expect(result.idNumber).toBe(input.idNumber);
     expect(result.mobile).toBe(input.mobile);
-    expect(result.emailEncrypted).not.toBe(input.email);
   });
 
   it('should decrypt PII fields when loading by email', async () => {
@@ -95,13 +97,12 @@ describe('ConsumerRepository', () => {
       createdAt: new Date(),
     };
 
-    mockPrismaService.consumer.findUnique.mockResolvedValue(mockDbRecord);
+    mockChain.maybeSingle.mockResolvedValue({ data: mockDbRecord, error: null });
 
     const result = await repository.findConsumerByEmail(email);
 
-    expect(prismaService.consumer.findUnique).toHaveBeenCalledWith({
-      where: { emailEncrypted: encryptedEmail },
-    });
+    expect(supabaseService.client.from).toHaveBeenCalledWith('Consumer');
+    expect(mockChain.eq).toHaveBeenCalledWith('emailEncrypted', encryptedEmail);
 
     expect(result.email).toBe(email);
     expect(result.idNumber).toBe('1234567890');

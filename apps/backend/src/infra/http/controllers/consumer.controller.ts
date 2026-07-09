@@ -4,16 +4,14 @@ import { CreateConsumerDto } from '../dto/create-consumer.dto';
 import { AddConsentDto } from '../dto/add-consent.dto';
 import * as express from 'express';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { KYCStatus } from '@prisma/client';
-
-import { PrismaService } from '../../database/prisma.service';
+import { SupabaseService } from '../../database/supabase.service';
 
 @ApiTags('consumers')
 @Controller('api/v1/consumers')
 export class ConsumerController {
   constructor(
     private readonly consumerRepo: ConsumerRepository,
-    private readonly prisma: PrismaService,
+    private readonly supabase: SupabaseService,
   ) {}
 
   @Post()
@@ -85,7 +83,7 @@ export class ConsumerController {
       throw new BadRequestException('FICA check requires a verified ID number. Please provide your South African ID.');
     }
 
-    const targetStatus = shouldSucceed ? KYCStatus.VERIFIED : KYCStatus.MANUAL_REVIEW;
+    const targetStatus = shouldSucceed ? 'VERIFIED' : 'MANUAL_REVIEW';
     return this.consumerRepo.updateKYCStatus(id, targetStatus);
   }
 
@@ -124,9 +122,12 @@ export class ConsumerController {
 
     const consents = await this.consumerRepo.getConsentsByConsumerId(id);
     
-    const vouchers = await this.prisma.voucher.findMany({
-      where: { consumerId: id },
-    });
+    const { data: vouchers, error } = await this.supabase.client
+      .from('Voucher')
+      .select('*')
+      .eq('consumerId', id);
+
+    const voucherList = vouchers || [];
 
     return {
       exportTimestamp: new Date(),
@@ -146,7 +147,7 @@ export class ConsumerController {
         version: c.version,
         timestamp: c.timestamp,
       })),
-      vouchers: vouchers.map(v => ({
+      vouchers: voucherList.map(v => ({
         merchant: v.merchantName,
         amountCents: Number(v.amount),
         code: v.code,

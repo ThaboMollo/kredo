@@ -1,84 +1,89 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
+import { SupabaseService } from './supabase.service';
 import { LedgerTransaction, AccountType, EntryDirection } from '../../domain/ledger/ledger-transaction';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class LedgerRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly supabase: SupabaseService) {}
 
   async createAccount(code: string, name: string, type: AccountType) {
-    return this.prisma.ledgerAccount.create({
-      data: {
+    const { data: account, error } = await this.supabase.client
+      .from('LedgerAccount')
+      .insert({
         code,
         name,
-        type: type as any, // Map to Prisma enum
-      },
-    });
+        type,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to create ledger account: ${error.message}`);
+    }
+
+    return account;
   }
 
   async findAccountByCode(code: string) {
-    return this.prisma.ledgerAccount.findUnique({
-      where: { code },
-    });
+    const { data: account, error } = await this.supabase.client
+      .from('LedgerAccount')
+      .select('*')
+      .eq('code', code)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Failed to query account: ${error.message}`);
+    }
+
+    return account;
   }
 
   async createTransaction(transaction: LedgerTransaction) {
-    return this.prisma.$transaction(async (tx) => {
-      // 1. Verify idempotency
-      const existing = await tx.ledgerTransaction.findUnique({
-        where: { idempotencyKey: transaction.idempotencyKey },
-      });
-      if (existing) {
-        return existing;
-      }
+    // Map entries to JSON formats, converting BigInts to string representations for JSON safety
+    const entriesJson = transaction.entries.map((e) => ({
+      accountId: e.accountId,
+      amount: e.amount.toString(),
+      direction: e.direction,
+    }));
 
-      // 2. Create Transaction
-      const dbTx = await tx.ledgerTransaction.create({
-        data: {
-          idempotencyKey: transaction.idempotencyKey,
-          description: transaction.description,
-        },
-      });
-
-      // 3. Create Entries
-      for (const entry of transaction.entries) {
-        await tx.ledgerEntry.create({
-          data: {
-            transactionId: dbTx.id,
-            accountId: entry.accountId,
-            amount: entry.amount,
-            direction: entry.direction as any, // Map to Prisma enum
-          },
-        });
-      }
-
-      return dbTx;
+    const { data, error } = await this.supabase.client.rpc('create_ledger_transaction', {
+      p_idempotency_key: transaction.idempotencyKey,
+      p_description: transaction.description,
+      p_entries: entriesJson,
     });
+
+    if (error) {
+      throw new Error(`Ledger transaction failed to post: ${error.message}`);
+    }
+
+    return data;
   }
 
   async getAccountBalance(code: string): Promise<bigint> {
-    const account = await this.prisma.ledgerAccount.findUnique({
-      where: { code },
-      include: {
-        entries: true,
-      },
-    });
-
+    const account = await this.findAccountByCode(code);
     if (!account) {
       throw new Error(`Ledger account with code ${code} not found.`);
     }
 
-    let balance = 0n;
-    const isDebitPositive =
-      account.type === 'ASSET' || account.type === 'EXPENSE';
+    const { data: entries, error } = await this.supabase.client
+      .from('LedgerEntry')
+      .select('*')
+      .eq('accountId', account.id);
 
-    for (const entry of account.entries) {
+    if (error) {
+      throw new Error(`Failed to retrieve entries: ${error.message}`);
+    }
+
+    let balance = 0n;
+    const isDebitPositive = account.type === 'ASSET' || account.type === 'EXPENSE';
+
+    for (const entry of (entries || [])) {
       const isDebit = entry.direction === 'DEBIT';
+      const amountBig = BigInt(entry.amount);
       if (isDebitPositive) {
-        balance += isDebit ? entry.amount : -entry.amount;
+        balance += isDebit ? amountBig : -amountBig;
       } else {
-        balance += isDebit ? -entry.amount : entry.amount;
+        balance += isDebit ? -amountBig : amountBig;
       }
     }
 

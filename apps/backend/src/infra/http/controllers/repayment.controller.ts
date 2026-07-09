@@ -1,14 +1,14 @@
-import { Controller, Post, Body, Req, BadRequestException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma.service';
+import { Controller, Post, Body, BadRequestException, NotFoundException } from '@nestjs/common';
+import { SupabaseService } from '../../database/supabase.service';
 import { LedgerRepository } from '../../database/ledger.repository';
 import { LedgerTransaction, EntryDirection, AccountType } from '../../../domain/ledger/ledger-transaction';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('repayments')
 @Controller('api/v1/repayments')
 export class RepaymentController {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly supabase: SupabaseService,
     private readonly ledgerRepo: LedgerRepository,
   ) {}
 
@@ -17,10 +17,13 @@ export class RepaymentController {
   async createRepaymentSession(
     @Body() dto: { consumerId: string; amount: number } // amount in cents
   ) {
-    const consumer = await this.prisma.consumer.findUnique({
-      where: { id: dto.consumerId },
-    });
-    if (!consumer) {
+    const { data: consumer, error } = await this.supabase.client
+      .from('Consumer')
+      .select('*')
+      .eq('id', dto.consumerId)
+      .maybeSingle();
+
+    if (error || !consumer) {
       throw new NotFoundException('Consumer profile not found.');
     }
 
@@ -30,7 +33,6 @@ export class RepaymentController {
 
     const paymentRef = `REPAY-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
 
-    // Return Yoco / Ozow checkout mock URL
     return {
       paymentRef,
       checkoutUrl: `https://checkout.yoco.com/sandbox/pay?ref=${paymentRef}&amount=${dto.amount}`,
@@ -46,7 +48,6 @@ export class RepaymentController {
       return { success: false, message: 'Payment ignored' };
     }
 
-    // 1. Find or seed ledger accounts
     let cashAccount = await this.ledgerRepo.findAccountByCode('1100-CASH-CLEARING');
     if (!cashAccount) {
       cashAccount = await this.ledgerRepo.createAccount('1100-CASH-CLEARING', 'Cash Clearing Account', AccountType.ASSET);
@@ -57,10 +58,6 @@ export class RepaymentController {
       receivableAccount = await this.ledgerRepo.createAccount('1000-RECEIVABLES', 'Consumer Receivables', AccountType.ASSET);
     }
 
-    // 2. Build double-entry ledger transaction
-    // Repayment received:
-    // DR Cash Clearing (Asset increases)
-    // CR Consumer Receivables (Receivables Asset decreases)
     const transaction = new LedgerTransaction(
       body.paymentRef,
       `Student repayment ref ${body.paymentRef}`,
@@ -78,7 +75,6 @@ export class RepaymentController {
       ]
     );
 
-    // 3. Post to database atomically
     await this.ledgerRepo.createTransaction(transaction);
 
     return { success: true, balance: Number(await this.ledgerRepo.getAccountBalance('1000-RECEIVABLES')) };

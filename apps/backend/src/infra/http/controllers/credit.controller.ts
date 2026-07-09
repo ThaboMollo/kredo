@@ -1,14 +1,14 @@
 import { Controller, Post, Body, Headers, BadRequestException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../../database/prisma.service';
+import { SupabaseService } from '../../database/supabase.service';
 import { LedgerRepository } from '../../database/ledger.repository';
 import { LedgerTransaction, EntryDirection, AccountType } from '../../../domain/ledger/ledger-transaction';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @ApiTags('credit')
 @Controller('api/v1/credit')
 export class CreditController {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly supabase: SupabaseService,
     private readonly ledgerRepo: LedgerRepository,
   ) {}
 
@@ -17,11 +17,13 @@ export class CreditController {
   async runAffordability(
     @Body() dto: { consumerId: string; grossIncome: number; declaredExpenses: number; bureauObligations: number }
   ) {
-    const consumer = await this.prisma.consumer.findUnique({
-      where: { id: dto.consumerId },
-      include: { subscriptions: true },
-    });
-    if (!consumer) {
+    const { data: consumer, error: consErr } = await this.supabase.client
+      .from('Consumer')
+      .select('*')
+      .eq('id', dto.consumerId)
+      .maybeSingle();
+
+    if (consErr || !consumer) {
       throw new NotFoundException('Consumer profile not found.');
     }
 
@@ -31,44 +33,59 @@ export class CreditController {
     }
 
     // Determine limit: up to half of disposable income, capped by subscription tier
-    const activeSub = consumer.subscriptions.find((s) => s.status === 'ACTIVE');
-    const isPremium = activeSub?.planCode === 'STUDENT_PREMIUM';
+    const { data: subs } = await this.supabase.client
+      .from('Subscription')
+      .select('*')
+      .eq('consumerId', dto.consumerId)
+      .eq('status', 'ACTIVE');
+
+    const isPremium = (subs || []).some((s) => s.planCode === 'STUDENT_PREMIUM');
     const planCap = isPremium ? 350000 : 150000; // R3 500 vs R1 500
 
     const rawLimit = Math.floor(disposableIncome / 2);
     const approvedLimit = Math.min(rawLimit, planCap);
 
-    return this.prisma.$transaction(async (tx) => {
-      // 1. Create affordability assessment log
-      const assessment = await tx.affordabilityAssessment.create({
-        data: {
-          consumerId: dto.consumerId,
-          grossIncome: BigInt(dto.grossIncome),
-          declaredExpenses: BigInt(dto.declaredExpenses),
-          bureauObligations: BigInt(dto.bureauObligations),
-          disposableIncome: BigInt(disposableIncome),
-          approvedLimit: BigInt(approvedLimit),
-        },
-      });
+    // 1. Create affordability assessment log
+    const { data: assessment, error: assErr } = await this.supabase.client
+      .from('AffordabilityAssessment')
+      .insert({
+        consumerId: dto.consumerId,
+        grossIncome: dto.grossIncome,
+        declaredExpenses: dto.declaredExpenses,
+        bureauObligations: dto.bureauObligations,
+        disposableIncome: disposableIncome,
+        approvedLimit: approvedLimit,
+      })
+      .select()
+      .single();
 
-      // 2. Create Draft Credit Agreement
-      const agreement = await tx.creditAgreement.create({
-        data: {
-          consumerId: dto.consumerId,
-          quotePdfUrl: `https://storage.kalahari.co.za/quotes/quote-${assessment.id}.pdf`,
-          agreementPdfUrl: `https://storage.kalahari.co.za/agreements/contract-${assessment.id}.pdf`,
-          status: 'DRAFT',
-        },
-      });
+    if (assErr) {
+      throw new BadRequestException(`Failed to create assessment: ${assErr.message}`);
+    }
 
-      return {
-        assessmentId: assessment.id,
-        agreementId: agreement.id,
-        approvedLimit,
-        quotePdfUrl: agreement.quotePdfUrl,
-        agreementPdfUrl: agreement.agreementPdfUrl,
-      };
-    });
+    // 2. Create Draft Credit Agreement
+    const { data: agreement, error: agrErr } = await this.supabase.client
+      .from('CreditAgreement')
+      .insert({
+        consumerId: dto.consumerId,
+        quotePdfUrl: `https://storage.kalahari.co.za/quotes/quote-${assessment.id}.pdf`,
+        agreementPdfUrl: `https://storage.kalahari.co.za/agreements/contract-${assessment.id}.pdf`,
+        status: 'DRAFT',
+      })
+      .select()
+      .single();
+
+    if (agrErr) {
+      throw new BadRequestException(`Failed to create agreement: ${agrErr.message}`);
+    }
+
+    return {
+      assessmentId: assessment.id,
+      agreementId: agreement.id,
+      approvedLimit,
+      quotePdfUrl: agreement.quotePdfUrl,
+      agreementPdfUrl: agreement.agreementPdfUrl,
+    };
   }
 
   @Post('sign')
@@ -80,55 +97,71 @@ export class CreditController {
       throw new BadRequestException('Invalid OTP signature token. Use 123456.');
     }
 
-    const agreement = await this.prisma.creditAgreement.findUnique({
-      where: { id: dto.agreementId },
-      include: { consumer: { include: { affordabilityAssessments: { orderBy: { createdAt: 'desc' }, take: 1 } } } },
-    });
+    const { data: agreement, error: agrErr } = await this.supabase.client
+      .from('CreditAgreement')
+      .select('*')
+      .eq('id', dto.agreementId)
+      .maybeSingle();
 
-    if (!agreement) {
+    if (agrErr || !agreement) {
       throw new NotFoundException('Credit agreement not found.');
     }
 
-    const latestAssessment = agreement.consumer.affordabilityAssessments[0];
+    const { data: assessments, error: assErr } = await this.supabase.client
+      .from('AffordabilityAssessment')
+      .select('*')
+      .eq('consumerId', dto.consumerId)
+      .order('createdAt', { ascending: false })
+      .limit(1);
+
+    const latestAssessment = assessments?.[0];
     if (!latestAssessment) {
       throw new BadRequestException('No affordability assessment found for this profile.');
     }
 
-    return this.prisma.$transaction(async (tx) => {
-      // 1. Update agreement to signed
-      const signedAgreement = await tx.creditAgreement.update({
-        where: { id: dto.agreementId },
-        data: {
-          status: 'SIGNED',
-          signedAt: new Date(),
-        },
-      });
+    // 1. Update agreement to signed
+    const { data: signedAgreement, error: updErr } = await this.supabase.client
+      .from('CreditAgreement')
+      .update({
+        status: 'SIGNED',
+        signedAt: new Date().toISOString(),
+      })
+      .eq('id', dto.agreementId)
+      .select()
+      .single();
 
-      // 2. Provision or update revolving credit facility
-      const facility = await tx.creditFacility.upsert({
-        where: { consumerId: dto.consumerId },
-        create: {
+    if (updErr) {
+      throw new BadRequestException(`Failed to sign agreement: ${updErr.message}`);
+    }
+
+    // 2. Provision or update revolving credit facility
+    const { data: facility, error: facErr } = await this.supabase.client
+      .from('CreditFacility')
+      .upsert(
+        {
           consumerId: dto.consumerId,
           totalLimit: latestAssessment.approvedLimit,
-          utilisedLimit: 0n,
+          utilisedLimit: 0,
           status: 'ACTIVE',
         },
-        update: {
-          totalLimit: latestAssessment.approvedLimit,
-          status: 'ACTIVE',
-        },
-      });
+        { onConflict: 'consumerId' }
+      )
+      .select()
+      .single();
 
-      return {
-        agreementId: signedAgreement.id,
-        status: signedAgreement.status,
-        facility: {
-          id: facility.id,
-          totalLimit: Number(facility.totalLimit),
-          available: Number(facility.totalLimit - facility.utilisedLimit),
-        },
-      };
-    });
+    if (facErr) {
+      throw new BadRequestException(`Failed to provision facility: ${facErr.message}`);
+    }
+
+    return {
+      agreementId: signedAgreement.id,
+      status: signedAgreement.status,
+      facility: {
+        id: facility.id,
+        totalLimit: Number(facility.totalLimit),
+        available: Number(facility.totalLimit - facility.utilisedLimit),
+      },
+    };
   }
 
   @Post('drawdowns')
@@ -141,19 +174,39 @@ export class CreditController {
       throw new BadRequestException('Header Idempotency-Key is mandatory.');
     }
 
-    const facility = await this.prisma.creditFacility.findUnique({
-      where: { consumerId: dto.consumerId },
-    });
+    const { data: facility, error: facErr } = await this.supabase.client
+      .from('CreditFacility')
+      .select('*')
+      .eq('consumerId', dto.consumerId)
+      .maybeSingle();
 
-    if (!facility || facility.status !== 'ACTIVE') {
+    if (facErr || !facility || facility.status !== 'ACTIVE') {
       throw new BadRequestException('No active credit facility found.');
     }
 
     const amountBig = BigInt(dto.amount);
-    const available = facility.totalLimit - facility.utilisedLimit;
+    const available = BigInt(facility.totalLimit) - BigInt(facility.utilisedLimit);
 
     if (amountBig > available) {
       throw new BadRequestException('Insufficient available credit limit.');
+    }
+
+    // Check existing ledger transaction by idempotency key
+    const { data: existingLedgerTx } = await this.supabase.client
+      .from('LedgerTransaction')
+      .select('*')
+      .eq('idempotencyKey', idempotencyKey)
+      .maybeSingle();
+
+    if (existingLedgerTx) {
+      const { data: voucher } = await this.supabase.client
+        .from('Voucher')
+        .select('*')
+        .eq('consumerId', dto.consumerId)
+        .like('code', `KRE-${dto.merchantName.substring(0,3).toUpperCase()}%`)
+        .limit(1)
+        .maybeSingle();
+      return { message: 'Idempotent response', voucher };
     }
 
     // 1. Fetch or seed ledger accounts
@@ -168,9 +221,6 @@ export class CreditController {
     }
 
     // 2. Build Double-Entry Ledger Transaction
-    // Drawdown details:
-    // DR Consumer Receivables (receivables increases)
-    // CR Voucher Liability (obligation to pay retailer increases)
     const transaction = new LedgerTransaction(
       idempotencyKey,
       `Voucher drawdown for ${dto.merchantName}`,
@@ -188,58 +238,53 @@ export class CreditController {
       ]
     );
 
-    return this.prisma.$transaction(async (tx) => {
-      // Check existing ledger transaction by idempotency key
-      const existingLedgerTx = await tx.ledgerTransaction.findUnique({
-        where: { idempotencyKey },
-      });
+    // Write Ledger transaction
+    await this.ledgerRepo.createTransaction(transaction);
 
-      if (existingLedgerTx) {
-        const voucher = await tx.voucher.findFirst({
-          where: { code: { startsWith: `KRE-${dto.merchantName.substring(0,3).toUpperCase()}` } }, // Find matching
-        });
-        return { message: 'Idempotent response', voucher };
-      }
+    // Increment utilized limit
+    const newUtilised = BigInt(facility.utilisedLimit) + amountBig;
+    await this.supabase.client
+      .from('CreditFacility')
+      .update({ utilisedLimit: newUtilised.toString() })
+      .eq('consumerId', dto.consumerId);
 
-      // Execute Ledger write
-      await this.ledgerRepo.createTransaction(transaction);
+    // Generate Voucher details
+    const voucherCode = `KRE-${dto.merchantName.substring(0, 3).toUpperCase()}-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
+    const { data: voucher, error: vchErr } = await this.supabase.client
+      .from('Voucher')
+      .insert({
+        consumerId: dto.consumerId,
+        merchantName: dto.merchantName,
+        amount: amountBig.toString(),
+        code: voucherCode,
+        qrValue: `https://kredo.kalahari.co.za/scan/${voucherCode}`,
+        status: 'ISSUED',
+        expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      })
+      .select()
+      .single();
 
-      // Increment utilized limit
-      await tx.creditFacility.update({
-        where: { consumerId: dto.consumerId },
-        data: { utilisedLimit: { increment: amountBig } },
-      });
+    if (vchErr) {
+      throw new BadRequestException(`Failed to issue voucher: ${vchErr.message}`);
+    }
 
-      // Generate Voucher details
-      const voucherCode = `KRE-${dto.merchantName.substring(0, 3).toUpperCase()}-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
-      const voucher = await tx.voucher.create({
-        data: {
-          consumerId: dto.consumerId,
-          merchantName: dto.merchantName,
-          amount: amountBig,
-          code: voucherCode,
-          qrValue: `https://kredo.kalahari.co.za/scan/${voucherCode}`,
-          status: 'ISSUED',
-          expiryDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-        },
-      });
-
-      return {
-        success: true,
-        voucher,
-        available: Number(facility.totalLimit - (facility.utilisedLimit + amountBig)),
-      };
-    });
+    return {
+      success: true,
+      voucher,
+      available: Number(available - amountBig),
+    };
   }
 
   @Post('drawdowns/redeem')
   @ApiOperation({ summary: 'Simulate retailer POS voucher redemption' })
   async redeemVoucher(@Body() body: { voucherCode: string }) {
-    const voucher = await this.prisma.voucher.findUnique({
-      where: { code: body.voucherCode },
-    });
+    const { data: voucher, error: vchErr } = await this.supabase.client
+      .from('Voucher')
+      .select('*')
+      .eq('code', body.voucherCode)
+      .maybeSingle();
 
-    if (!voucher) {
+    if (vchErr || !voucher) {
       throw new NotFoundException('Voucher code not found.');
     }
 
@@ -247,7 +292,6 @@ export class CreditController {
       throw new BadRequestException(`Voucher cannot be redeemed. Current status: ${voucher.status}`);
     }
 
-    // 1. Fetch or seed ledger accounts
     let liabilityAccount = await this.ledgerRepo.findAccountByCode('2000-VOUCHER-LIABILITY');
     if (!liabilityAccount) {
       liabilityAccount = await this.ledgerRepo.createAccount('2000-VOUCHER-LIABILITY', 'Voucher Liability', AccountType.LIABILITY);
@@ -258,10 +302,6 @@ export class CreditController {
       cashAccount = await this.ledgerRepo.createAccount('1100-CASH-CLEARING', 'Cash Clearing Account', AccountType.ASSET);
     }
 
-    // 2. Build Double-Entry Ledger Transaction
-    // Voucher Settled at POS:
-    // DR Voucher Liability (decrease liability)
-    // CR Cash Clearing (decrease cash asset since we pay the retailer)
     const idempotencyKey = `REDEEM-${body.voucherCode}`;
     const transaction = new LedgerTransaction(
       idempotencyKey,
@@ -269,32 +309,36 @@ export class CreditController {
       [
         {
           accountId: liabilityAccount.id,
-          amount: voucher.amount,
+          amount: BigInt(voucher.amount),
           direction: EntryDirection.DEBIT,
         },
         {
           accountId: cashAccount.id,
-          amount: voucher.amount,
+          amount: BigInt(voucher.amount),
           direction: EntryDirection.CREDIT,
         },
       ]
     );
 
-    return this.prisma.$transaction(async (tx) => {
-      // Execute ledger update
-      await this.ledgerRepo.createTransaction(transaction);
+    // Execute ledger update
+    await this.ledgerRepo.createTransaction(transaction);
 
-      // Update voucher state
-      const updatedVoucher = await tx.voucher.update({
-        where: { code: body.voucherCode },
-        data: { status: 'REDEEMED' },
-      });
+    // Update voucher state
+    const { data: updatedVoucher, error: updErr } = await this.supabase.client
+      .from('Voucher')
+      .update({ status: 'REDEEMED' })
+      .eq('code', body.voucherCode)
+      .select()
+      .single();
 
-      return {
-        success: true,
-        voucherCode: updatedVoucher.code,
-        status: updatedVoucher.status,
-      };
-    });
+    if (updErr) {
+      throw new BadRequestException(`Failed to update voucher status: ${updErr.message}`);
+    }
+
+    return {
+      success: true,
+      voucherCode: updatedVoucher.code,
+      status: updatedVoucher.status,
+    };
   }
 }

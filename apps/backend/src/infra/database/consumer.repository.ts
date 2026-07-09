@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from './prisma.service';
+import { SupabaseService } from './supabase.service';
 import { encrypt, decrypt } from '../../utils/crypto';
-import { KYCStatus, ConsentStatus, Consumer, Consent } from '@prisma/client';
 
 export interface CreateConsumerDto {
   email: string;
@@ -13,7 +12,7 @@ export interface CreateConsumerDto {
 
 export interface ConsentInput {
   consentType: string;
-  status: ConsentStatus;
+  status: 'GRANTED' | 'WITHDRAWN';
   version: string;
   ipAddress: string;
   userAgent: string;
@@ -21,9 +20,9 @@ export interface ConsentInput {
 
 @Injectable()
 export class ConsumerRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly supabase: SupabaseService) {}
 
-  private decryptConsumer(consumer: Consumer | null): any {
+  private decryptConsumer(consumer: any | null): any {
     if (!consumer) return null;
     return {
       ...consumer,
@@ -38,70 +37,119 @@ export class ConsumerRepository {
     const idNumberEnc = data.idNumber ? encrypt(data.idNumber, true) : null;
     const mobileEnc = data.mobile ? encrypt(data.mobile) : null;
 
-    const consumer = await this.prisma.consumer.create({
-      data: {
+    const { data: consumer, error } = await this.supabase.client
+      .from('Consumer')
+      .insert({
         emailEncrypted: emailEnc,
         idNumberEncrypted: idNumberEnc,
         mobileEncrypted: mobileEnc,
         firstName: data.firstName,
         lastName: data.lastName,
-      },
-    });
+      })
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to create consumer: ${error.message}`);
+    }
 
     return this.decryptConsumer(consumer);
   }
 
   async findConsumerById(id: string): Promise<any> {
-    const consumer = await this.prisma.consumer.findUnique({
-      where: { id },
-    });
+    const { data: consumer, error } = await this.supabase.client
+      .from('Consumer')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Failed to query consumer by id: ${error.message}`);
+    }
+
     return this.decryptConsumer(consumer);
   }
 
   async findConsumerByEmail(email: string): Promise<any> {
     const emailEnc = encrypt(email, true);
-    const consumer = await this.prisma.consumer.findUnique({
-      where: { emailEncrypted: emailEnc },
-    });
+    const { data: consumer, error } = await this.supabase.client
+      .from('Consumer')
+      .select('*')
+      .eq('emailEncrypted', emailEnc)
+      .maybeSingle();
+
+    if (error) {
+      throw new Error(`Failed to query consumer by email: ${error.message}`);
+    }
+
     return this.decryptConsumer(consumer);
   }
 
-  async updateKYCStatus(id: string, status: KYCStatus): Promise<any> {
-    const consumer = await this.prisma.consumer.update({
-      where: { id },
-      data: { kycStatus: status },
-    });
+  async updateKYCStatus(id: string, status: string): Promise<any> {
+    const { data: consumer, error } = await this.supabase.client
+      .from('Consumer')
+      .update({ kycStatus: status })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update KYC status: ${error.message}`);
+    }
+
     return this.decryptConsumer(consumer);
   }
 
   async updateStudentVerification(id: string, verified: boolean, studentCardDocUrl?: string): Promise<any> {
-    const consumer = await this.prisma.consumer.update({
-      where: { id },
-      data: { 
-        studentVerified: verified,
-        ...(studentCardDocUrl && { studentCardDocUrl }),
-      },
-    });
+    const updatePayload: Record<string, any> = { studentVerified: verified };
+    if (studentCardDocUrl) {
+      updatePayload['studentCardDocUrl'] = studentCardDocUrl;
+    }
+
+    const { data: consumer, error } = await this.supabase.client
+      .from('Consumer')
+      .update(updatePayload)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update student verification: ${error.message}`);
+    }
+
     return this.decryptConsumer(consumer);
   }
 
-  async addConsent(consumerId: string, consent: ConsentInput): Promise<Consent> {
-    return this.prisma.consent.create({
-      data: {
+  async addConsent(consumerId: string, consent: ConsentInput): Promise<any> {
+    const { data: savedConsent, error } = await this.supabase.client
+      .from('Consent')
+      .insert({
         consumerId,
         consentType: consent.consentType,
         status: consent.status,
         version: consent.version,
-        ipAddress: consent.ipAddress,
-        userAgent: consent.userAgent,
-      },
-    });
+      })
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to insert consent: ${error.message}`);
+    }
+
+    return savedConsent;
   }
 
-  async getConsentsByConsumerId(consumerId: string): Promise<Consent[]> {
-    return this.prisma.consent.findMany({
-      where: { consumerId },
-      orderBy: { timestamp: 'desc' },
-    });
+  async getConsentsByConsumerId(consumerId: string): Promise<any[]> {
+    const { data: consents, error } = await this.supabase.client
+      .from('Consent')
+      .select('*')
+      .eq('consumerId', consumerId)
+      .order('timestamp', { ascending: false });
+
+    if (error) {
+      throw new Error(`Failed to fetch consents: ${error.message}`);
+    }
+
+    return consents || [];
   }
 }
