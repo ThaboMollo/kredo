@@ -1,7 +1,9 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
+
 
 generator client {
   provider = "prisma-client-js"
@@ -47,3 +49,143 @@ model LedgerEntry {
   direction     EntryDirection
   createdAt     DateTime          @default(now())
 }
+
+enum KYCStatus {
+  PENDING
+  VERIFIED
+  FAILED
+  MANUAL_REVIEW
+}
+
+enum ConsentStatus {
+  GRANTED
+  WITHDRAWN
+}
+
+model Consumer {
+  id                  String             @id @default(uuid())
+  emailEncrypted      String             @unique
+  idNumberEncrypted   String?            @unique
+  mobileEncrypted     String?
+  firstName           String
+  lastName            String
+  kycStatus           KYCStatus          @default(PENDING)
+  studentVerified     Boolean            @default(false)
+  studentCardDocUrl   String?
+  consents            Consent[]
+  subscriptions       Subscription[]
+  mandates            Mandate[]
+  affordabilityAssessments AffordabilityAssessment[]
+  creditAgreements         CreditAgreement[]
+  creditFacility           CreditFacility?
+  vouchers                 Voucher[]
+  createdAt           DateTime           @default(now())
+}
+
+model Consent {
+  id             String        @id @default(uuid())
+  consumerId     String
+  consumer       Consumer      @relation(fields: [consumerId], references: [id], onDelete: Cascade)
+  consentType    String        // e.g., "PROCESSING", "BUREAU_REPORTING", "MARKETING"
+  status         ConsentStatus
+  version        String        // Tracks the terms of service version
+  ipAddress      String
+  userAgent      String
+  timestamp      DateTime      @default(now())
+}
+
+model Lead {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  fullName          String
+  mobile            String?
+  university        String?
+  processingConsent Boolean  @default(false)
+  marketingConsent  Boolean  @default(false)
+  createdAt         DateTime @default(now())
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+}
+
+model Subscription {
+  id          String             @id @default(uuid())
+  consumerId  String
+  consumer    Consumer           @relation(fields: [consumerId], references: [id])
+  status      SubscriptionStatus @default(PENDING)
+  planCode    String             // e.g. "STUDENT_BASIC"
+  nextBilling DateTime
+  createdAt   DateTime           @default(now())
+}
+
+enum MandateStatus {
+  INITIATED
+  AUTHENTICATED
+  REJECTED
+  CANCELLED
+}
+
+model Mandate {
+  id              String        @id @default(uuid())
+  consumerId      String
+  consumer        Consumer      @relation(fields: [consumerId], references: [id])
+  bankCode        String
+  accountNumber   String        // Encrypted at rest
+  mandateRef      String        @unique // DebiCheck reference
+  status          MandateStatus @default(INITIATED)
+  createdAt       DateTime      @default(now())
+}
+
+model AffordabilityAssessment {
+  id                 String   @id @default(uuid())
+  consumerId         String
+  consumer           Consumer @relation(fields: [consumerId], references: [id])
+  grossIncome        BigInt
+  declaredExpenses   BigInt
+  bureauObligations  BigInt
+  disposableIncome   BigInt
+  approvedLimit      BigInt
+  createdAt          DateTime @default(now())
+}
+
+model CreditAgreement {
+  id              String    @id @default(uuid())
+  consumerId      String
+  consumer        Consumer  @relation(fields: [consumerId], references: [id])
+  quotePdfUrl     String?
+  agreementPdfUrl String?
+  signedAt        DateTime?
+  status          String    // DRAFT, SIGNED, ACTIVE
+  createdAt       DateTime  @default(now())
+}
+
+model CreditFacility {
+  id             String   @id @default(uuid())
+  consumerId     String   @unique
+  consumer       Consumer @relation(fields: [consumerId], references: [id])
+  totalLimit     BigInt   // revolving max limit
+  utilisedLimit  BigInt   // active drawdowns
+  status         String   // ACTIVE, SUSPENDED
+  createdAt      DateTime @default(now())
+}
+
+model Voucher {
+  id             String   @id @default(uuid())
+  consumerId     String
+  consumer       Consumer @relation(fields: [consumerId], references: [id])
+  merchantName   String
+  amount         BigInt
+  code           String   @unique
+  qrValue        String
+  status         String   // ISSUED, REDEEMED, EXPIRED, CANCELLED
+  expiryDate     DateTime
+  createdAt      DateTime @default(now())
+}
+
+
+
+
