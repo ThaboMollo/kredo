@@ -7,6 +7,8 @@ const DEFAULT_ALLOWED_ORIGINS = [
   'https://kalahari.co.za',
   'https://www.kalahari.co.za',
   'https://kredo.kalahari.co.za',
+  'https://kredo-web.vercel.app',
+  'https://kredo-portal.vercel.app',
   'http://localhost:3001',
   'http://localhost:4200',
 ];

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
-const PORTAL_APPLY_URL = `${process.env.NEXT_PUBLIC_PORTAL_BASE_URL ?? 'https://kredo.kalahari.co.za'}/apply`;
+const PORTAL_APPLY_URL = `${process.env.NEXT_PUBLIC_PORTAL_BASE_URL ?? 'https://kredo-portal.vercel.app'}/apply`;
 
 interface PortalCTAProps {
   children: React.ReactNode;
