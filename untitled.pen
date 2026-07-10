@@ -1,0 +1,3385 @@
+{
+  "version": "2.13",
+  "children": [
+    {
+      "type": "frame",
+      "id": "Mv6qv",
+      "x": 0,
+      "y": 0,
+      "name": "Component Library",
+      "width": 1180,
+      "fill": "$surface-primary",
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 32,
+      "children": [
+        {
+          "type": "frame",
+          "id": "ren8R",
+          "name": "Core Components",
+          "width": "fill_container",
+          "gap": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "PzDRv",
+              "name": "Primary Action Button",
+              "reusable": true,
+              "fill": "$accent-primary",
+              "cornerRadius": "$radius-sm",
+              "gap": 10,
+              "padding": [
+                14,
+                20
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "wMAzE",
+                  "name": "Button Label",
+                  "fill": "$foreground-inverse",
+                  "content": "Start application",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "DwNUB",
+              "name": "Secondary Action Button",
+              "reusable": true,
+              "cornerRadius": "$radius-sm",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                13,
+                18
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "YhaHD",
+                  "name": "Button Label",
+                  "fill": "$foreground-primary",
+                  "content": "Learn more",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "vDdw1",
+              "name": "Status Pill",
+              "reusable": true,
+              "fill": "#EFE7D4FF",
+              "cornerRadius": "$radius-sm",
+              "gap": 8,
+              "padding": [
+                7,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "N9ZVMo",
+                  "name": "Status Dot",
+                  "fill": "$accent-primary",
+                  "width": 8,
+                  "height": 8
+                },
+                {
+                  "type": "text",
+                  "id": "kkq7B",
+                  "name": "Status Label",
+                  "fill": "$foreground-primary",
+                  "content": "Verified",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CKiEo",
+              "name": "Portal Metric",
+              "reusable": true,
+              "width": 230,
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 18,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "qpIxz",
+                  "name": "Metric Label",
+                  "fill": "$foreground-secondary",
+                  "content": "Available facility",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "B4Pwdi",
+                  "name": "Metric Value",
+                  "fill": "$foreground-primary",
+                  "content": "R 2 400",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 34
+                },
+                {
+                  "type": "text",
+                  "id": "u0R7Pl",
+                  "name": "Metric Note",
+                  "fill": "$foreground-secondary",
+                  "content": "Updated today",
+                  "fontFamily": "$font-body",
+                  "fontSize": 15,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "yxdl5",
+              "name": "Process Step",
+              "reusable": true,
+              "width": 250,
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "qLAAE",
+                  "name": "Step Number",
+                  "fill": "$accent-primary",
+                  "content": "01",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "g6CIg",
+                  "name": "Step Title",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Subscribe",
+                  "lineHeight": 1.05,
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "TvwIY",
+                  "name": "Step Copy",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Choose a plan and activate a DebiCheck mandate before credit is offered.",
+                  "lineHeight": 1.25,
+                  "fontFamily": "$font-body",
+                  "fontSize": 17,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "rLZ2l",
+      "x": 0,
+      "y": 360,
+      "name": "Marketing Site - Home",
+      "clip": true,
+      "width": 1440,
+      "height": 2200,
+      "fill": "$surface-primary",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "J0gud",
+          "name": "Hero - Student Credit Promise",
+          "width": "fill_container",
+          "height": 760,
+          "fill": "#D8D0C2FF",
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "YePxt",
+              "x": 0,
+              "y": 0,
+              "name": "Hero Workspace Photography",
+              "metadata": {
+                "type": "unsplash",
+                "username": "jaimemarrero",
+                "link": "https://unsplash.com/@jaimemarrero",
+                "author": "Jaime Marrero"
+              },
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "https://images.unsplash.com/photo-1698422454462-5ec4e767cd19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODM2MjU3ODV8&ixlib=rb-4.1.0&q=80&w=1080",
+                "mode": "fill"
+              },
+              "width": 1440,
+              "height": 760
+            },
+            {
+              "type": "rectangle",
+              "id": "V0tXdh",
+              "x": 0,
+              "y": 0,
+              "name": "Hero Contrast Wash",
+              "fill": "#2D292699",
+              "width": 1440,
+              "height": 760
+            },
+            {
+              "type": "text",
+              "id": "WIvHo",
+              "x": 72,
+              "y": 42,
+              "name": "Top Context Label",
+              "fill": "$foreground-inverse",
+              "content": "KALAHARI CREDIT",
+              "fontFamily": "$font-caption",
+              "fontSize": 13,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "y92OR",
+              "x": 1192,
+              "y": 42,
+              "name": "Portal Link Label",
+              "fill": "$foreground-inverse",
+              "content": "APPLY IN KREDO",
+              "fontFamily": "$font-caption",
+              "fontSize": 13,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "HZsbf",
+              "x": 120,
+              "y": 198,
+              "name": "Hero Eyebrow",
+              "fill": "#F5F2E9CC",
+              "content": "STUDENT CREDIT WITHOUT THE LOAN-SHARK FEEL",
+              "fontFamily": "$font-caption",
+              "fontSize": 13,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "q9J2Un",
+              "x": 116,
+              "y": 238,
+              "name": "Hero Headline",
+              "fill": "$foreground-inverse",
+              "textGrowth": "fixed-width",
+              "width": 870,
+              "content": "Build real credit before graduation.",
+              "lineHeight": 0.95,
+              "fontFamily": "$font-heading",
+              "fontSize": 92,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "vsFTN",
+              "x": 122,
+              "y": 466,
+              "name": "Hero Support Copy",
+              "fill": "#F5F2E9E6",
+              "textGrowth": "fixed-width",
+              "width": 520,
+              "content": "Kalahari helps students subscribe, qualify responsibly, draw down closed-loop vouchers, repay on time, and create a formal credit history the right way.",
+              "lineHeight": 1.22,
+              "fontFamily": "$font-body",
+              "fontSize": 25,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "v0fqyE",
+              "x": 122,
+              "y": 600,
+              "name": "Hero Actions",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "KBlW7",
+                  "type": "ref",
+                  "ref": "PzDRv",
+                  "name": "Start Application CTA",
+                  "descendants": {
+                    "wMAzE": {
+                      "content": "Start in Kredo"
+                    }
+                  }
+                },
+                {
+                  "id": "G6SfkQ",
+                  "type": "ref",
+                  "ref": "DwNUB",
+                  "name": "How It Works CTA",
+                  "fill": "#F5F2E9EE",
+                  "descendants": {
+                    "YhaHD": {
+                      "content": "How it works"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "s1pxE",
+          "name": "Trust Label Row",
+          "width": "fill_container",
+          "height": 86,
+          "stroke": "$border-subtle",
+          "strokeWidth": {
+            "bottom": 1
+          },
+          "gap": 34,
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "isxnf",
+              "name": "POPIA consent first",
+              "fill": "$foreground-secondary",
+              "content": "POPIA CONSENT FIRST",
+              "fontFamily": "$font-caption",
+              "fontSize": 12,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "xGmTw",
+              "name": "Credit-bureau reporting",
+              "fill": "$foreground-secondary",
+              "content": "CREDIT-BUREAU REPORTING",
+              "fontFamily": "$font-caption",
+              "fontSize": 12,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "AvJwF",
+              "name": "Transparent fees",
+              "fill": "$foreground-secondary",
+              "content": "TRANSPARENT FEES",
+              "fontFamily": "$font-caption",
+              "fontSize": 12,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "P9Z8S7",
+              "name": "Campus partner ready",
+              "fill": "$foreground-secondary",
+              "content": "CAMPUS PARTNER READY",
+              "fontFamily": "$font-caption",
+              "fontSize": 12,
+              "fontWeight": "700"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Ksrjr",
+          "name": "How Kalahari Works",
+          "width": "fill_container",
+          "height": 520,
+          "gap": 72,
+          "padding": [
+            86,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "a93pt",
+              "name": "How It Works Copy",
+              "width": 550,
+              "layout": "vertical",
+              "gap": 22,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "he6hD",
+                  "name": "Section Marker",
+                  "fill": "$accent-primary",
+                  "content": "HOW IT WORKS",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "PfXI4",
+                  "name": "Section Headline",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "A subscription path into formal credit.",
+                  "lineHeight": 1.02,
+                  "fontFamily": "$font-heading",
+                  "fontSize": 54,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "E2Xcf",
+                  "name": "Section Body",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Students activate a plan, complete consent and verification, then use approved vouchers at partner retailers. Repayments and behaviour are recorded for bureau reporting, with plain-language compliance at every step.",
+                  "lineHeight": 1.28,
+                  "fontFamily": "$font-body",
+                  "fontSize": 21,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rVcPb",
+              "name": "Three Step Summary",
+              "width": "fill_container",
+              "gap": 18,
+              "children": [
+                {
+                  "id": "lAm16",
+                  "type": "ref",
+                  "ref": "yxdl5",
+                  "name": "Step 01",
+                  "width": "fill_container",
+                  "descendants": {
+                    "qLAAE": {
+                      "content": "01"
+                    },
+                    "g6CIg": {
+                      "content": "Subscribe"
+                    },
+                    "TvwIY": {
+                      "content": "Choose a plan and set up DebiCheck before credit is offered."
+                    }
+                  }
+                },
+                {
+                  "id": "cGAO9",
+                  "type": "ref",
+                  "ref": "yxdl5",
+                  "name": "Step 02",
+                  "width": "fill_container",
+                  "descendants": {
+                    "qLAAE": {
+                      "content": "02"
+                    },
+                    "g6CIg": {
+                      "content": "Draw down"
+                    },
+                    "TvwIY": {
+                      "content": "Use closed-loop vouchers only within the approved facility."
+                    }
+                  }
+                },
+                {
+                  "id": "CTqyU",
+                  "type": "ref",
+                  "ref": "yxdl5",
+                  "name": "Step 03",
+                  "width": "fill_container",
+                  "descendants": {
+                    "qLAAE": {
+                      "content": "03"
+                    },
+                    "g6CIg": {
+                      "content": "Build history"
+                    },
+                    "TvwIY": {
+                      "content": "Repay on time and have behaviour reported to bureaus."
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "foWJV",
+          "name": "Trust And Compliance",
+          "width": "fill_container",
+          "height": 520,
+          "gap": 80,
+          "padding": [
+            72,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "rectangle",
+              "id": "enApQ",
+              "name": "Compliance Workspace Photo",
+              "metadata": {
+                "type": "unsplash",
+                "username": "mitchel3uo",
+                "link": "https://unsplash.com/@mitchel3uo",
+                "author": "Mitchell Luo"
+              },
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "https://images.unsplash.com/photo-1574420773965-b34c687f35b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODM2MjU3ODZ8&ixlib=rb-4.1.0&q=80&w=1080",
+                "mode": "fill"
+              },
+              "width": 520,
+              "height": 360
+            },
+            {
+              "type": "frame",
+              "id": "tskjr",
+              "name": "Trust Copy",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 22,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "NVtoI",
+                  "name": "Trust Marker",
+                  "fill": "$accent-primary",
+                  "content": "TRUST & COMPLIANCE",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "UBoPX",
+                  "name": "Trust Headline",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Built for a credit-anxious audience.",
+                  "lineHeight": 1.02,
+                  "fontFamily": "$font-heading",
+                  "fontSize": 54,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "JzwmO",
+                  "name": "Trust Body",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "The public site explains NCR registration, POPIA handling, fee transparency, complaints paths, and the difference between reported behaviour and guaranteed score changes. No login lives here; qualified intent moves to Kredo.",
+                  "lineHeight": 1.28,
+                  "fontFamily": "$font-body",
+                  "fontSize": 21,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Pr6MX",
+          "name": "Lead Capture Slab",
+          "width": "fill_container",
+          "height": 314,
+          "fill": "$surface-inverse",
+          "gap": 70,
+          "padding": [
+            58,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "nFsBv",
+              "name": "Lead Capture Copy",
+              "width": 670,
+              "layout": "vertical",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "tmqBO",
+                  "name": "Lead Capture Marker",
+                  "fill": "#F5F2E9B3",
+                  "content": "WAITLIST HANDOFF",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "UwDax",
+                  "name": "Lead Capture Headline",
+                  "fill": "$foreground-inverse",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Capture demand now. Complete applications in Kredo.",
+                  "lineHeight": 1.05,
+                  "fontFamily": "$font-heading",
+                  "fontSize": 46,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Poq9r",
+                  "name": "Lead Capture Body",
+                  "fill": "#F5F2E9D9",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "The form records granular POPIA consent and referral attribution, then sends applicants to kredo.kalahari.co.za/apply with campaign data intact.",
+                  "lineHeight": 1.28,
+                  "fontFamily": "$font-body",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "BnCdr",
+              "name": "Lead Form Preview",
+              "width": "fill_container",
+              "stroke": "#F5F2E94D",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 12,
+              "padding": 22,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "gphYb",
+                  "name": "Student email Field",
+                  "width": "fill_container",
+                  "height": 46,
+                  "fill": "#F5F2E914",
+                  "padding": [
+                    0,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "R1YJ7",
+                      "name": "Student email Placeholder",
+                      "fill": "#F5F2E999",
+                      "content": "Student email",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "k6iGS5",
+                  "name": "Phone number Field",
+                  "width": "fill_container",
+                  "height": 46,
+                  "fill": "#F5F2E914",
+                  "padding": [
+                    0,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "u8qIw",
+                      "name": "Phone number Placeholder",
+                      "fill": "#F5F2E999",
+                      "content": "Phone number",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "YpGja",
+                  "name": "Campus / institution Field",
+                  "width": "fill_container",
+                  "height": 46,
+                  "fill": "#F5F2E914",
+                  "padding": [
+                    0,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Z99Eq7",
+                      "name": "Campus / institution Placeholder",
+                      "fill": "#F5F2E999",
+                      "content": "Campus / institution",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "bSbda",
+                  "type": "ref",
+                  "ref": "PzDRv",
+                  "name": "Join Waitlist Button",
+                  "width": "fill_container",
+                  "descendants": {
+                    "wMAzE": {
+                      "content": "Join waitlist"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "elEUg",
+      "x": 1560,
+      "y": 360,
+      "name": "Marketing Site - Pricing & Trust",
+      "clip": true,
+      "width": 1440,
+      "height": 1680,
+      "fill": "$surface-primary",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "tbf1k",
+          "name": "Pricing Header",
+          "width": "fill_container",
+          "height": 420,
+          "gap": 80,
+          "padding": [
+            58,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "DY3Fj",
+              "name": "Pricing Header Copy",
+              "width": 680,
+              "layout": "vertical",
+              "gap": 22,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "blUx0",
+                  "name": "Pricing Eyebrow",
+                  "fill": "$accent-primary",
+                  "content": "TRANSPARENT BY DESIGN",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "InVTZ",
+                  "name": "Pricing Headline",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Fees should be easy to compare before a student commits.",
+                  "lineHeight": 1.02,
+                  "fontFamily": "$font-heading",
+                  "fontSize": 62,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "vPoRu",
+                  "name": "Pricing Body",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Kalahari separates subscription, facility, voucher drawdown, and repayment obligations in plain language. The final quote and agreement still come from the regulated Kredo backend.",
+                  "lineHeight": 1.28,
+                  "fontFamily": "$font-body",
+                  "fontSize": 22,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "rectangle",
+              "id": "v41qI",
+              "name": "Pricing Workspace Image",
+              "metadata": {
+                "type": "unsplash",
+                "username": "christinhumephoto",
+                "link": "https://unsplash.com/@christinhumephoto",
+                "author": "Christin Hume"
+              },
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w4NDM0ODN8MHwxfHJhbmRvbXx8fHx8fHx8fDE3ODM2MjU4MjR8&ixlib=rb-4.1.0&q=80&w=1080",
+                "mode": "fill"
+              },
+              "width": "fill_container",
+              "height": 300
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ixwkx",
+          "name": "Plan Comparison",
+          "width": "fill_container",
+          "height": 410,
+          "gap": 24,
+          "padding": [
+            40,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "R5DLF",
+              "name": "Starter Plan",
+              "width": "fill_container",
+              "height": 315,
+              "fill": "$surface-primary",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 26,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "OWOVk",
+                  "name": "Starter Plan Name",
+                  "fill": "$accent-primary",
+                  "content": "Starter",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "kmGLG",
+                  "name": "Starter Plan Price",
+                  "fill": "$foreground-primary",
+                  "content": "R49 / month",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 42,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "qxFxS",
+                  "name": "Starter Plan Copy",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "For students preparing their profile before applying.",
+                  "lineHeight": 1.25,
+                  "fontFamily": "$font-body",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "M9x29J",
+                  "name": "Starter Plan Included",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Waitlist, money guides, eligibility prompts",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "F5s9tL",
+              "name": "Builder Plan",
+              "width": "fill_container",
+              "height": 315,
+              "fill": "#EFE7D4FF",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 26,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "O26H6N",
+                  "name": "Builder Plan Name",
+                  "fill": "$accent-primary",
+                  "content": "Builder",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "YTqJI",
+                  "name": "Builder Plan Price",
+                  "fill": "$foreground-primary",
+                  "content": "R99 / month",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 42,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "R62aP",
+                  "name": "Builder Plan Copy",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "For verified students ready for bureau-reportable behaviour.",
+                  "lineHeight": 1.25,
+                  "fontFamily": "$font-body",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "tPrU7",
+                  "name": "Builder Plan Included",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "DebiCheck mandate, facility review, voucher access",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "rbhx4",
+              "name": "Campus Plan",
+              "width": "fill_container",
+              "height": 315,
+              "fill": "$surface-primary",
+              "stroke": "$border-subtle",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 26,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "RNHKD",
+                  "name": "Campus Plan Name",
+                  "fill": "$accent-primary",
+                  "content": "Campus",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "w6MjeU",
+                  "name": "Campus Plan Price",
+                  "fill": "$foreground-primary",
+                  "content": "Custom",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 42,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "qqRIy",
+                  "name": "Campus Plan Copy",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "For SRCs, residences, and retailer partnerships.",
+                  "lineHeight": 1.25,
+                  "fontFamily": "$font-body",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "jjzNV",
+                  "name": "Campus Plan Included",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Lead routing, ambassador codes, partner reporting",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$font-caption",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "I0hgMg",
+          "name": "Compliance Detail Slab",
+          "width": "fill_container",
+          "height": 480,
+          "fill": "$surface-inverse",
+          "gap": 70,
+          "padding": [
+            72,
+            120
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "LSja7",
+              "name": "Compliance Detail Copy",
+              "width": 560,
+              "layout": "vertical",
+              "gap": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "CTkzR",
+                  "name": "Compliance Detail Marker",
+                  "fill": "#F5F2E9B3",
+                  "content": "BEFORE LAUNCH",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "JCzDu",
+                  "name": "Compliance Detail Headline",
+                  "fill": "$foreground-inverse",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Surface the NCR, POPIA, complaints, and bureau-reporting story.",
+                  "lineHeight": 1.05,
+                  "fontFamily": "$font-heading",
+                  "fontSize": 50,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "gm2k3",
+                  "name": "Compliance Detail Body",
+                  "fill": "#F5F2E9D9",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "The trust page should make registration status, privacy handling, fee caps, legal documents, and escalation paths visible before students are asked to apply.",
+                  "lineHeight": 1.3,
+                  "fontFamily": "$font-body",
+                  "fontSize": 20,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "MssoL",
+              "name": "Compliance Checklist",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "rYRBu",
+                  "name": "NCR registration number and renewal note",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "tlfiF",
+                      "name": "NCR registration number and renewal note Dot",
+                      "fill": "$accent-primary",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "QX84t",
+                      "name": "NCR registration number and renewal note Text",
+                      "fill": "$foreground-inverse",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "NCR registration number and renewal note",
+                      "fontFamily": "$font-body",
+                      "fontSize": 21,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "v8RDe",
+                  "name": "POPIA consent purposes with withdrawal path",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "qjUvG",
+                      "name": "POPIA consent purposes with withdrawal path Dot",
+                      "fill": "$accent-primary",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "C9ngc4",
+                      "name": "POPIA consent purposes with withdrawal path Text",
+                      "fill": "$foreground-inverse",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "POPIA consent purposes with withdrawal path",
+                      "fontFamily": "$font-body",
+                      "fontSize": 21,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "R9b57",
+                  "name": "FAQPage structured data for trust content",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "KIdxE",
+                      "name": "FAQPage structured data for trust content Dot",
+                      "fill": "$accent-primary",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "ieBf3",
+                      "name": "FAQPage structured data for trust content Text",
+                      "fill": "$foreground-inverse",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "FAQPage structured data for trust content",
+                      "fontFamily": "$font-body",
+                      "fontSize": 21,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "y8icb",
+                  "name": "Plain-language warning: reporting does not guarantee score changes",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "tXm7I",
+                      "name": "Plain-language warning: reporting does not guarantee score changes Dot",
+                      "fill": "$accent-primary",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "dIqo6",
+                      "name": "Plain-language warning: reporting does not guarantee score changes Text",
+                      "fill": "$foreground-inverse",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Plain-language warning: reporting does not guarantee score changes",
+                      "fontFamily": "$font-body",
+                      "fontSize": 21,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "B5f5V7",
+                  "name": "Legal document links: terms, privacy, PAIA, cookies",
+                  "width": "fill_container",
+                  "gap": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "ellipse",
+                      "id": "cnal6",
+                      "name": "Legal document links: terms, privacy, PAIA, cookies Dot",
+                      "fill": "$accent-primary",
+                      "width": 8,
+                      "height": 8
+                    },
+                    {
+                      "type": "text",
+                      "id": "M4eCFS",
+                      "name": "Legal document links: terms, privacy, PAIA, cookies Text",
+                      "fill": "$foreground-inverse",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Legal document links: terms, privacy, PAIA, cookies",
+                      "fontFamily": "$font-body",
+                      "fontSize": 21,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "wnijJ",
+          "name": "FAQ Preview",
+          "width": "fill_container",
+          "height": 350,
+          "layout": "vertical",
+          "gap": 18,
+          "padding": [
+            46,
+            120
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "EimVd",
+              "name": "FAQ Marker",
+              "fill": "$accent-primary",
+              "content": "FAQ STRUCTURED DATA",
+              "fontFamily": "$font-caption",
+              "fontSize": 12,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "YFs6k",
+              "name": "How does Kalahari help build credit history?",
+              "width": "fill_container",
+              "stroke": "$border-subtle",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "gap": 24,
+              "padding": [
+                11,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "uoj0i",
+                  "name": "How does Kalahari help build credit history? Question",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "How does Kalahari help build credit history?",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "kbWcl",
+                  "name": "How does Kalahari help build credit history? Plus",
+                  "fill": "$accent-primary",
+                  "content": "+",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ewvdA",
+              "name": "What happens if I miss a repayment?",
+              "width": "fill_container",
+              "stroke": "$border-subtle",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "gap": 24,
+              "padding": [
+                11,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "a0TWJ",
+                  "name": "What happens if I miss a repayment? Question",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "What happens if I miss a repayment?",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Q9MrKV",
+                  "name": "What happens if I miss a repayment? Plus",
+                  "fill": "$accent-primary",
+                  "content": "+",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "vD32F",
+              "name": "Where do applications continue after the public site?",
+              "width": "fill_container",
+              "stroke": "$border-subtle",
+              "strokeWidth": {
+                "bottom": 1
+              },
+              "gap": 24,
+              "padding": [
+                11,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "g41Bi",
+                  "name": "Where do applications continue after the public site? Question",
+                  "fill": "$foreground-primary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Where do applications continue after the public site?",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "T4E6Lh",
+                  "name": "Where do applications continue after the public site? Plus",
+                  "fill": "$accent-primary",
+                  "content": "+",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 24,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "URRYj",
+      "x": 0,
+      "y": 2680,
+      "name": "App Portal - Student Dashboard",
+      "clip": true,
+      "width": 1440,
+      "height": 1024,
+      "fill": "$surface-primary",
+      "children": [
+        {
+          "type": "frame",
+          "id": "U31CTn",
+          "name": "Portal Sidebar",
+          "width": 270,
+          "height": "fill_container",
+          "fill": "$surface-inverse",
+          "layout": "vertical",
+          "gap": 28,
+          "padding": [
+            34,
+            26
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "Kvw8z",
+              "name": "Kredo Brand",
+              "fill": "$foreground-inverse",
+              "content": "Kredo",
+              "fontFamily": "$font-heading",
+              "fontSize": 42,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "B7UYF",
+              "name": "Portal Navigation",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "P634qn",
+                  "name": "Dashboard Nav Item",
+                  "width": "fill_container",
+                  "height": 42,
+                  "fill": "#F5F2E91F",
+                  "cornerRadius": 4,
+                  "gap": 12,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "a8p3BS",
+                      "name": "Dashboard Nav Label",
+                      "fill": "$foreground-inverse",
+                      "content": "Dashboard",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "k3fTyc",
+                  "name": "Apply Nav Item",
+                  "width": "fill_container",
+                  "height": 42,
+                  "fill": "#00000000",
+                  "cornerRadius": 4,
+                  "gap": 12,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "v65Ic",
+                      "name": "Apply Nav Label",
+                      "fill": "#F5F2E999",
+                      "content": "Apply",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "TRWF3",
+                  "name": "Vouchers Nav Item",
+                  "width": "fill_container",
+                  "height": 42,
+                  "fill": "#00000000",
+                  "cornerRadius": 4,
+                  "gap": 12,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "D1jgu",
+                      "name": "Vouchers Nav Label",
+                      "fill": "#F5F2E999",
+                      "content": "Vouchers",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "sr07U",
+                  "name": "Repayments Nav Item",
+                  "width": "fill_container",
+                  "height": 42,
+                  "fill": "#00000000",
+                  "cornerRadius": 4,
+                  "gap": 12,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "b1sjIY",
+                      "name": "Repayments Nav Label",
+                      "fill": "#F5F2E999",
+                      "content": "Repayments",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ahHg0",
+                  "name": "Credit progress Nav Item",
+                  "width": "fill_container",
+                  "height": 42,
+                  "fill": "#00000000",
+                  "cornerRadius": 4,
+                  "gap": 12,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "EdHi3",
+                      "name": "Credit progress Nav Label",
+                      "fill": "#F5F2E999",
+                      "content": "Credit progress",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Ox4H4",
+                  "name": "Profile Nav Item",
+                  "width": "fill_container",
+                  "height": 42,
+                  "fill": "#00000000",
+                  "cornerRadius": 4,
+                  "gap": 12,
+                  "padding": [
+                    0,
+                    12
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "x380lK",
+                      "name": "Profile Nav Label",
+                      "fill": "#F5F2E999",
+                      "content": "Profile",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Y6tTYG",
+              "name": "Sidebar Verification Status",
+              "width": "fill_container",
+              "stroke": "#F5F2E933",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "z3D3R",
+                  "name": "Status Small Label",
+                  "fill": "#F5F2E999",
+                  "content": "APPLICATION STATUS",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 11,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "wQFEM",
+                  "name": "Status Main",
+                  "fill": "$foreground-inverse",
+                  "content": "KYC verified",
+                  "fontFamily": "$font-heading",
+                  "fontSize": 28,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "gipWE",
+          "name": "Dashboard Main",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 26,
+          "padding": 40,
+          "children": [
+            {
+              "type": "frame",
+              "id": "YDxmx",
+              "name": "Dashboard Header",
+              "width": "fill_container",
+              "gap": 24,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "w2ozr",
+                  "name": "Dashboard Header Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "vwvO4",
+                      "name": "Dashboard Eyebrow",
+                      "fill": "$accent-primary",
+                      "content": "WELCOME BACK, LERATO",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "NWF2T",
+                      "name": "Dashboard Title",
+                      "fill": "$foreground-primary",
+                      "content": "Your credit-building workspace",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 50,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "w0mPu",
+                  "type": "ref",
+                  "ref": "PzDRv",
+                  "name": "Request Voucher Header Button",
+                  "descendants": {
+                    "wMAzE": {
+                      "content": "Request voucher"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "S8tN5s",
+              "name": "Dashboard Metrics",
+              "width": "fill_container",
+              "gap": 18,
+              "children": [
+                {
+                  "id": "yc6Al",
+                  "type": "ref",
+                  "ref": "CKiEo",
+                  "name": "Available facility Metric",
+                  "width": "fill_container",
+                  "descendants": {
+                    "qpIxz": {
+                      "content": "Available facility"
+                    },
+                    "B4Pwdi": {
+                      "content": "R 2 400"
+                    },
+                    "u0R7Pl": {
+                      "content": "R600 utilised"
+                    }
+                  }
+                },
+                {
+                  "id": "bAHdw",
+                  "type": "ref",
+                  "ref": "CKiEo",
+                  "name": "Next DebiCheck Metric",
+                  "width": "fill_container",
+                  "descendants": {
+                    "qpIxz": {
+                      "content": "Next DebiCheck"
+                    },
+                    "B4Pwdi": {
+                      "content": "25 Jul"
+                    },
+                    "u0R7Pl": {
+                      "content": "R199 scheduled"
+                    }
+                  }
+                },
+                {
+                  "id": "YKibW",
+                  "type": "ref",
+                  "ref": "CKiEo",
+                  "name": "Credit history Metric",
+                  "width": "fill_container",
+                  "descendants": {
+                    "qpIxz": {
+                      "content": "Credit history"
+                    },
+                    "B4Pwdi": {
+                      "content": "3 months"
+                    },
+                    "u0R7Pl": {
+                      "content": "Next bureau run 31 Jul"
+                    }
+                  }
+                },
+                {
+                  "id": "c1g442",
+                  "type": "ref",
+                  "ref": "CKiEo",
+                  "name": "Voucher status Metric",
+                  "width": "fill_container",
+                  "descendants": {
+                    "qpIxz": {
+                      "content": "Voucher status"
+                    },
+                    "B4Pwdi": {
+                      "content": "1 active"
+                    },
+                    "u0R7Pl": {
+                      "content": "Expires in 9 days"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "fL0gn",
+              "name": "Dashboard Body",
+              "width": "fill_container",
+              "height": "fill_container",
+              "gap": 26,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "K1gFqz",
+                  "name": "Facility Overview Panel",
+                  "width": 650,
+                  "height": "fill_container",
+                  "fill": "#EFE7D4FF",
+                  "layout": "vertical",
+                  "gap": 24,
+                  "padding": 28,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RRzPb",
+                      "name": "Facility Panel Label",
+                      "fill": "$accent-primary",
+                      "content": "FACILITY",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kYSPU",
+                      "name": "Facility Panel Title",
+                      "fill": "$foreground-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Keep the next action obvious.",
+                      "lineHeight": 1.05,
+                      "fontFamily": "$font-heading",
+                      "fontSize": 46,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "vh8Eh",
+                      "name": "Facility Panel Body",
+                      "fill": "$foreground-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "The dashboard shows limits and repayments from backend data only. Large drawdowns, signing, and bank-detail changes require step-up authentication before the action continues.",
+                      "lineHeight": 1.28,
+                      "fontFamily": "$font-body",
+                      "fontSize": 21,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Os7AE",
+                      "name": "Progress Bars",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 14,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "OumOC",
+                          "name": "Facility used Row",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "TTfA4",
+                              "name": "Facility used Labels",
+                              "width": "fill_container",
+                              "gap": 12,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "lre62",
+                                  "name": "Facility used Label",
+                                  "fill": "$foreground-primary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Facility used",
+                                  "fontFamily": "$font-caption",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Sqrzf",
+                                  "name": "Facility used Value",
+                                  "fill": "$foreground-secondary",
+                                  "content": "25%",
+                                  "fontFamily": "$font-caption",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "KeEwM",
+                              "name": "Facility used Rail",
+                              "width": "fill_container",
+                              "height": 8,
+                              "fill": "#DCD8CBFF",
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "yJ9Jm",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Facility used Fill",
+                                  "fill": "$accent-primary",
+                                  "width": 150,
+                                  "height": 8
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "AQG2S",
+                          "name": "On-time months Row",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "X3B4aC",
+                              "name": "On-time months Labels",
+                              "width": "fill_container",
+                              "gap": 12,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "nEDoR",
+                                  "name": "On-time months Label",
+                                  "fill": "$foreground-primary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "On-time months",
+                                  "fontFamily": "$font-caption",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "ROdhy",
+                                  "name": "On-time months Value",
+                                  "fill": "$foreground-secondary",
+                                  "content": "3 of 6",
+                                  "fontFamily": "$font-caption",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "d9ZJLn",
+                              "name": "On-time months Rail",
+                              "width": "fill_container",
+                              "height": 8,
+                              "fill": "#DCD8CBFF",
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "wBbLI",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "On-time months Fill",
+                                  "fill": "$accent-primary",
+                                  "width": 260,
+                                  "height": 8
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "F837EU",
+                          "name": "Profile complete Row",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 8,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "eENJy",
+                              "name": "Profile complete Labels",
+                              "width": "fill_container",
+                              "gap": 12,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "BXrMh",
+                                  "name": "Profile complete Label",
+                                  "fill": "$foreground-primary",
+                                  "textGrowth": "fixed-width",
+                                  "width": "fill_container",
+                                  "content": "Profile complete",
+                                  "fontFamily": "$font-caption",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "S31Mg",
+                                  "name": "Profile complete Value",
+                                  "fill": "$foreground-secondary",
+                                  "content": "92%",
+                                  "fontFamily": "$font-caption",
+                                  "fontSize": 12,
+                                  "fontWeight": "700"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "yK2h4",
+                              "name": "Profile complete Rail",
+                              "width": "fill_container",
+                              "height": 8,
+                              "fill": "#DCD8CBFF",
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "rectangle",
+                                  "id": "oK405",
+                                  "x": 0,
+                                  "y": 0,
+                                  "name": "Profile complete Fill",
+                                  "fill": "$accent-primary",
+                                  "width": 415,
+                                  "height": 8
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "pruIJ",
+                  "name": "Action Queue Panel",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kXHLF",
+                      "name": "Required Actions",
+                      "width": "fill_container",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Ch5Ko",
+                          "name": "Required Actions Title",
+                          "fill": "$foreground-primary",
+                          "content": "Required actions",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 34,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "seQAX",
+                          "name": "Review pre-agreement quote",
+                          "width": "fill_container",
+                          "stroke": "$border-subtle",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
+                          "gap": 14,
+                          "padding": [
+                            14,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "m5AaBj",
+                              "type": "ref",
+                              "ref": "vDdw1",
+                              "name": "Review pre-agreement quote Status",
+                              "descendants": {
+                                "kkq7B": {
+                                  "content": "Ready to continue"
+                                }
+                              }
+                            },
+                            {
+                              "type": "text",
+                              "id": "LBErD",
+                              "name": "Review pre-agreement quote Label",
+                              "fill": "$foreground-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Review pre-agreement quote",
+                              "fontFamily": "$font-body",
+                              "fontSize": 20,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bT21n",
+                          "name": "Confirm DebiCheck mandate",
+                          "width": "fill_container",
+                          "stroke": "$border-subtle",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
+                          "gap": 14,
+                          "padding": [
+                            14,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "QGDCJ",
+                              "type": "ref",
+                              "ref": "vDdw1",
+                              "name": "Confirm DebiCheck mandate Status",
+                              "descendants": {
+                                "kkq7B": {
+                                  "content": "Scheduled for 25 Jul"
+                                }
+                              }
+                            },
+                            {
+                              "type": "text",
+                              "id": "u3XI1",
+                              "name": "Confirm DebiCheck mandate Label",
+                              "fill": "$foreground-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Confirm DebiCheck mandate",
+                              "fontFamily": "$font-body",
+                              "fontSize": 20,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "z5bkA",
+                          "name": "Upload latest student proof",
+                          "width": "fill_container",
+                          "stroke": "$border-subtle",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
+                          "gap": 14,
+                          "padding": [
+                            14,
+                            0
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "id": "N1Onb8",
+                              "type": "ref",
+                              "ref": "vDdw1",
+                              "name": "Upload latest student proof Status",
+                              "descendants": {
+                                "kkq7B": {
+                                  "content": "Optional until next review"
+                                }
+                              }
+                            },
+                            {
+                              "type": "text",
+                              "id": "qdbRo",
+                              "name": "Upload latest student proof Label",
+                              "fill": "$foreground-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Upload latest student proof",
+                              "fontFamily": "$font-body",
+                              "fontSize": 20,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "s8QYil",
+                      "name": "Recent Ledger",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "lTJ4F",
+                          "name": "Recent Ledger Title",
+                          "fill": "$foreground-primary",
+                          "content": "Recent ledger activity",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 34,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "DQkuK",
+                          "name": "Voucher issued",
+                          "width": "fill_container",
+                          "gap": 18,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "h7lHA9",
+                              "name": "Voucher issued Name",
+                              "fill": "$foreground-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Voucher issued",
+                              "fontFamily": "$font-body",
+                              "fontSize": 19,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "g5Q9UD",
+                              "name": "Voucher issued Amount",
+                              "fill": "$accent-primary",
+                              "content": "R750",
+                              "fontFamily": "$font-caption",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "OnulK",
+                          "name": "Repayment received",
+                          "width": "fill_container",
+                          "gap": 18,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "X4XC8M",
+                              "name": "Repayment received Name",
+                              "fill": "$foreground-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Repayment received",
+                              "fontFamily": "$font-body",
+                              "fontSize": 19,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "HBGyH",
+                              "name": "Repayment received Amount",
+                              "fill": "$accent-primary",
+                              "content": "R199",
+                              "fontFamily": "$font-caption",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "atNA3",
+                          "name": "Subscription fee",
+                          "width": "fill_container",
+                          "gap": 18,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ZlTC6",
+                              "name": "Subscription fee Name",
+                              "fill": "$foreground-primary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Subscription fee",
+                              "fontFamily": "$font-body",
+                              "fontSize": 19,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "text",
+                              "id": "T6PRbJ",
+                              "name": "Subscription fee Amount",
+                              "fill": "$accent-primary",
+                              "content": "R99",
+                              "fontFamily": "$font-caption",
+                              "fontSize": 13,
+                              "fontWeight": "700"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "qi2Gl",
+      "x": 1560,
+      "y": 2680,
+      "name": "App Portal - Application Wizard",
+      "clip": true,
+      "width": 1440,
+      "height": 1024,
+      "fill": "$surface-primary",
+      "children": [
+        {
+          "type": "frame",
+          "id": "C2FpXR",
+          "name": "Wizard Progress Rail",
+          "width": 330,
+          "height": "fill_container",
+          "fill": "$surface-inverse",
+          "layout": "vertical",
+          "gap": 28,
+          "padding": [
+            44,
+            34
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "VPDlQ",
+              "name": "Wizard Brand",
+              "fill": "$foreground-inverse",
+              "content": "Kredo",
+              "fontFamily": "$font-heading",
+              "fontSize": 40,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "Z6rLsZ",
+              "name": "Wizard Caption",
+              "fill": "#F5F2E999",
+              "content": "APPLICATION WORKFLOW",
+              "fontFamily": "$font-caption",
+              "fontSize": 12,
+              "fontWeight": "700"
+            },
+            {
+              "type": "frame",
+              "id": "T9QGx",
+              "name": "Consent Wizard Step",
+              "width": "fill_container",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "DBSyb",
+                  "name": "Consent Number Chip",
+                  "width": 38,
+                  "height": 38,
+                  "fill": "#F5F2E91A",
+                  "cornerRadius": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "F46fT",
+                  "name": "Consent Number",
+                  "fill": "$foreground-inverse",
+                  "content": "01",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "i8amp",
+                  "name": "Consent Step Text",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "V9rlAc",
+                      "name": "Consent Step Label",
+                      "fill": "$foreground-inverse",
+                      "content": "Consent",
+                      "fontFamily": "$font-body",
+                      "fontSize": 20,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "W6HOH",
+                      "name": "Consent Step Status",
+                      "fill": "#F5F2E999",
+                      "content": "Complete",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "VqGgV",
+              "name": "KYC / FICA Wizard Step",
+              "width": "fill_container",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "dX6VF",
+                  "name": "KYC / FICA Number Chip",
+                  "width": 38,
+                  "height": 38,
+                  "fill": "#F5F2E91A",
+                  "cornerRadius": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "iR5od",
+                  "name": "KYC / FICA Number",
+                  "fill": "$foreground-inverse",
+                  "content": "02",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "zJmPo",
+                  "name": "KYC / FICA Step Text",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "TJnwo",
+                      "name": "KYC / FICA Step Label",
+                      "fill": "$foreground-inverse",
+                      "content": "KYC / FICA",
+                      "fontFamily": "$font-body",
+                      "fontSize": 20,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "U2XKF",
+                      "name": "KYC / FICA Step Status",
+                      "fill": "#F5F2E999",
+                      "content": "Complete",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sNcX7",
+              "name": "Affordability Wizard Step",
+              "width": "fill_container",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "bX246",
+                  "name": "Affordability Number Chip",
+                  "width": 38,
+                  "height": 38,
+                  "fill": "$accent-primary",
+                  "cornerRadius": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "aL0EU",
+                  "name": "Affordability Number",
+                  "fill": "$foreground-inverse",
+                  "content": "03",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "T4mIHS",
+                  "name": "Affordability Step Text",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "iCxyX",
+                      "name": "Affordability Step Label",
+                      "fill": "$foreground-inverse",
+                      "content": "Affordability",
+                      "fontFamily": "$font-body",
+                      "fontSize": 20,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "NDvGR",
+                      "name": "Affordability Step Status",
+                      "fill": "#F5F2E999",
+                      "content": "Current",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "VAEJy",
+              "name": "Quote Wizard Step",
+              "width": "fill_container",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "IjBrh",
+                  "name": "Quote Number Chip",
+                  "width": 38,
+                  "height": 38,
+                  "fill": "#F5F2E91A",
+                  "cornerRadius": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "TkMna",
+                  "name": "Quote Number",
+                  "fill": "$foreground-inverse",
+                  "content": "04",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "uUuMT",
+                  "name": "Quote Step Text",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rLzL5",
+                      "name": "Quote Step Label",
+                      "fill": "$foreground-inverse",
+                      "content": "Quote",
+                      "fontFamily": "$font-body",
+                      "fontSize": 20,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "R3IOa",
+                      "name": "Quote Step Status",
+                      "fill": "#F5F2E999",
+                      "content": "Locked",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "i0kVGW",
+              "name": "Agreement Wizard Step",
+              "width": "fill_container",
+              "gap": 14,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "hlUSl",
+                  "name": "Agreement Number Chip",
+                  "width": 38,
+                  "height": 38,
+                  "fill": "#F5F2E91A",
+                  "cornerRadius": 4,
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "uBAAZ",
+                  "name": "Agreement Number",
+                  "fill": "$foreground-inverse",
+                  "content": "05",
+                  "fontFamily": "$font-caption",
+                  "fontSize": 12,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "frame",
+                  "id": "r0Pec",
+                  "name": "Agreement Step Text",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RrA6c",
+                      "name": "Agreement Step Label",
+                      "fill": "$foreground-inverse",
+                      "content": "Agreement",
+                      "fontFamily": "$font-body",
+                      "fontSize": 20,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "SQuIm",
+                      "name": "Agreement Step Status",
+                      "fill": "#F5F2E999",
+                      "content": "Locked",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 11,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "a9tpsr",
+          "name": "Wizard Content",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 24,
+          "padding": 42,
+          "children": [
+            {
+              "type": "frame",
+              "id": "oSZBJ",
+              "name": "Wizard Header",
+              "width": "fill_container",
+              "gap": 24,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "M4GGyE",
+                  "name": "Wizard Header Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 8,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "iXTbY",
+                      "name": "Wizard Eyebrow",
+                      "fill": "$accent-primary",
+                      "content": "AFFORDABILITY ASSESSMENT",
+                      "fontFamily": "$font-caption",
+                      "fontSize": 12,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "n4tecV",
+                      "name": "Wizard Title",
+                      "fill": "$foreground-primary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Confirm what is affordable before any offer is made.",
+                      "lineHeight": 1.05,
+                      "fontFamily": "$font-heading",
+                      "fontSize": 48,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "id": "rro0M",
+                  "type": "ref",
+                  "ref": "PzDRv",
+                  "name": "Save And Continue Button",
+                  "descendants": {
+                    "wMAzE": {
+                      "content": "Save and continue"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Qx8uo",
+              "name": "Wizard Working Area",
+              "width": "fill_container",
+              "height": "fill_container",
+              "gap": 28,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "j0w4jB",
+                  "name": "Affordability Form Panel",
+                  "width": 640,
+                  "height": "fill_container",
+                  "fill": "#EFE7D4FF",
+                  "layout": "vertical",
+                  "gap": 18,
+                  "padding": 28,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "T6l1W",
+                      "name": "Form Panel Title",
+                      "fill": "$foreground-primary",
+                      "content": "Income, expenses, and obligations",
+                      "fontFamily": "$font-heading",
+                      "fontSize": 38,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "uxxPp",
+                      "name": "Monthly income Input",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ktE4T",
+                          "name": "Monthly income Label",
+                          "fill": "$foreground-secondary",
+                          "content": "MONTHLY INCOME",
+                          "fontFamily": "$font-caption",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "omBFl",
+                          "name": "Monthly income Value Box",
+                          "width": "fill_container",
+                          "height": 54,
+                          "fill": "$surface-primary",
+                          "stroke": "$border-subtle",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "D5aKeK",
+                              "name": "Monthly income Value",
+                              "fill": "$foreground-primary",
+                              "content": "R 4 200",
+                              "fontFamily": "$font-body",
+                              "fontSize": 21,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "z93xK",
+                      "name": "Existing obligations Input",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fuwfG",
+                          "name": "Existing obligations Label",
+                          "fill": "$foreground-secondary",
+                          "content": "EXISTING OBLIGATIONS",
+                          "fontFamily": "$font-caption",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "I4Bpw",
+                          "name": "Existing obligations Value Box",
+                          "width": "fill_container",
+                          "height": 54,
+                          "fill": "$surface-primary",
+                          "stroke": "$border-subtle",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "AvQtC",
+                              "name": "Existing obligations Value",
+                              "fill": "$foreground-primary",
+                              "content": "R 650",
+                              "fontFamily": "$font-body",
+                              "fontSize": 21,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "n43O8o",
+                      "name": "Transport and food Input",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "I4Sd3W",
+                          "name": "Transport and food Label",
+                          "fill": "$foreground-secondary",
+                          "content": "TRANSPORT AND FOOD",
+                          "fontFamily": "$font-caption",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "s5E0Cl",
+                          "name": "Transport and food Value Box",
+                          "width": "fill_container",
+                          "height": 54,
+                          "fill": "$surface-primary",
+                          "stroke": "$border-subtle",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "mihyn",
+                              "name": "Transport and food Value",
+                              "fill": "$foreground-primary",
+                              "content": "R 1 500",
+                              "fontFamily": "$font-body",
+                              "fontSize": 21,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "IeWKK",
+                      "name": "Study support / bursary Input",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "L9Vb2",
+                          "name": "Study support / bursary Label",
+                          "fill": "$foreground-secondary",
+                          "content": "STUDY SUPPORT / BURSARY",
+                          "fontFamily": "$font-caption",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "E8ZVU",
+                          "name": "Study support / bursary Value Box",
+                          "width": "fill_container",
+                          "height": 54,
+                          "fill": "$surface-primary",
+                          "stroke": "$border-subtle",
+                          "strokeWidth": 1,
+                          "padding": [
+                            0,
+                            14
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "E7hX69",
+                              "name": "Study support / bursary Value",
+                              "fill": "$foreground-primary",
+                              "content": "NSFAS allowance",
+                              "fontFamily": "$font-body",
+                              "fontSize": 21,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "BFeDW",
+                      "name": "Backend Quote Warning",
+                      "width": "fill_container",
+                      "fill": "#F5F2E9FF",
+                      "stroke": "$accent-primary",
+                      "strokeWidth": {
+                        "left": 3
+                      },
+                      "layout": "vertical",
+                      "gap": 8,
+                      "padding": 16,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "m97oH",
+                          "name": "Backend Warning Title",
+                          "fill": "$accent-primary",
+                          "content": "Client does not calculate the offer",
+                          "fontFamily": "$font-caption",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "e9N67q",
+                          "name": "Backend Warning Copy",
+                          "fill": "$foreground-secondary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Fee, limit, and agreement values return from the backend quote service and are snapshotted into the signed agreement.",
+                          "lineHeight": 1.25,
+                          "fontFamily": "$font-body",
+                          "fontSize": 18,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "rFeZC",
+                  "name": "Assessment Review Panel",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "layout": "vertical",
+                  "gap": 20,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "ttvyr",
+                      "name": "Compact Assessment Summary",
+                      "width": "fill_container",
+                      "height": 310,
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "vertical",
+                      "gap": 12,
+                      "padding": 20,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "F24rP",
+                          "name": "Compact Summary Title",
+                          "fill": "$foreground-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Assessment result preview",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 30,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "FDdwT",
+                          "name": "Disposable estimate Compact Row",
+                          "width": "fill_container",
+                          "height": 52,
+                          "stroke": "$border-subtle",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
+                          "gap": 14,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "aavN1",
+                              "name": "Disposable estimate Compact Label",
+                              "fill": "$foreground-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Disposable estimate",
+                              "fontFamily": "$font-caption",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "MC5UA",
+                              "name": "Disposable estimate Compact Value",
+                              "fill": "$foreground-primary",
+                              "content": "R 1 050",
+                              "fontFamily": "$font-heading",
+                              "fontSize": 24,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Y59a5d",
+                          "name": "Recommended limit Compact Row",
+                          "width": "fill_container",
+                          "height": 52,
+                          "stroke": "$border-subtle",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
+                          "gap": 14,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Utqgh",
+                              "name": "Recommended limit Compact Label",
+                              "fill": "$foreground-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Recommended limit",
+                              "fontFamily": "$font-caption",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "lNyeI",
+                              "name": "Recommended limit Compact Value",
+                              "fill": "$foreground-primary",
+                              "content": "R 2 400",
+                              "fontFamily": "$font-heading",
+                              "fontSize": 24,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "S3N80g",
+                          "name": "Mandate status Compact Row",
+                          "width": "fill_container",
+                          "height": 52,
+                          "stroke": "$border-subtle",
+                          "strokeWidth": {
+                            "bottom": 1
+                          },
+                          "gap": 14,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "ItOBA",
+                              "name": "Mandate status Compact Label",
+                              "fill": "$foreground-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Mandate status",
+                              "fontFamily": "$font-caption",
+                              "fontSize": 12,
+                              "fontWeight": "700"
+                            },
+                            {
+                              "type": "text",
+                              "id": "IeX6M",
+                              "name": "Mandate status Compact Value",
+                              "fill": "$foreground-primary",
+                              "content": "DebiCheck active",
+                              "fontFamily": "$font-heading",
+                              "fontSize": 24,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "RYODN",
+                      "name": "Compact System States",
+                      "width": "fill_container",
+                      "height": 430,
+                      "stroke": "$border-subtle",
+                      "strokeWidth": 1,
+                      "layout": "vertical",
+                      "gap": 11,
+                      "padding": 20,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "PqIG2",
+                          "name": "Compact States Title",
+                          "fill": "$foreground-primary",
+                          "textGrowth": "fixed-width",
+                          "width": "fill_container",
+                          "content": "Required state handling",
+                          "fontFamily": "$font-heading",
+                          "fontSize": 30,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Czqe8",
+                          "name": "Loading: skeleton rows while quote service responds Compact",
+                          "width": "fill_container",
+                          "gap": 10,
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "ZeZgO",
+                              "name": "Loading: skeleton rows while quote service responds Compact Dot",
+                              "fill": "$accent-primary",
+                              "width": 7,
+                              "height": 7
+                            },
+                            {
+                              "type": "text",
+                              "id": "Ti6s2",
+                              "name": "Loading: skeleton rows while quote service responds Compact Text",
+                              "fill": "$foreground-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Loading: skeleton rows while quote service responds",
+                              "lineHeight": 1.18,
+                              "fontFamily": "$font-body",
+                              "fontSize": 17,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "hXXJS",
+                          "name": "Error: explain failed verification without losing progress Compact",
+                          "width": "fill_container",
+                          "gap": 10,
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "urZT2",
+                              "name": "Error: explain failed verification without losing progress Compact Dot",
+                              "fill": "$accent-primary",
+                              "width": 7,
+                              "height": 7
+                            },
+                            {
+                              "type": "text",
+                              "id": "KUZFY",
+                              "name": "Error: explain failed verification without losing progress Compact Text",
+                              "fill": "$foreground-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Error: explain failed verification without losing progress",
+                              "lineHeight": 1.18,
+                              "fontFamily": "$font-body",
+                              "fontSize": 17,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "V8ogNb",
+                          "name": "Restriction: step-up before e-sign or large drawdown Compact",
+                          "width": "fill_container",
+                          "gap": 10,
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "XumoU",
+                              "name": "Restriction: step-up before e-sign or large drawdown Compact Dot",
+                              "fill": "$accent-primary",
+                              "width": 7,
+                              "height": 7
+                            },
+                            {
+                              "type": "text",
+                              "id": "HQDcD",
+                              "name": "Restriction: step-up before e-sign or large drawdown Compact Text",
+                              "fill": "$foreground-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Restriction: step-up before e-sign or large drawdown",
+                              "lineHeight": 1.18,
+                              "fontFamily": "$font-body",
+                              "fontSize": 17,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Qc4UQ",
+                          "name": "Success: agreement ready for PDF review and signature Compact",
+                          "width": "fill_container",
+                          "gap": 10,
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "wBsE1",
+                              "name": "Success: agreement ready for PDF review and signature Compact Dot",
+                              "fill": "$accent-primary",
+                              "width": 7,
+                              "height": 7
+                            },
+                            {
+                              "type": "text",
+                              "id": "gsOl8",
+                              "name": "Success: agreement ready for PDF review and signature Compact Text",
+                              "fill": "$foreground-secondary",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Success: agreement ready for PDF review and signature",
+                              "lineHeight": 1.18,
+                              "fontFamily": "$font-body",
+                              "fontSize": 17,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "accent-primary": {
+      "type": "color",
+      "value": "#7D6B3DFF"
+    },
+    "border-subtle": {
+      "type": "color",
+      "value": "#DCD8CBFF"
+    },
+    "font-body": {
+      "type": "string",
+      "value": "Newsreader"
+    },
+    "font-caption": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "font-heading": {
+      "type": "string",
+      "value": "Playfair Display"
+    },
+    "foreground-inverse": {
+      "type": "color",
+      "value": "#F5F2E9FF"
+    },
+    "foreground-primary": {
+      "type": "color",
+      "value": "#2D2926FF"
+    },
+    "foreground-secondary": {
+      "type": "color",
+      "value": "#5E5954FF"
+    },
+    "radius-sm": {
+      "type": "number",
+      "value": 4
+    },
+    "surface-inverse": {
+      "type": "color",
+      "value": "#2D2926FF"
+    },
+    "surface-primary": {
+      "type": "color",
+      "value": "#F5F2E9FF"
+    }
+  }
+}
