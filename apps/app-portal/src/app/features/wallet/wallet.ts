@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { PortalShellComponent } from '../../shared/portal-shell';
 import { environment } from '../../../environments/environment';
 
 interface Voucher {
@@ -15,122 +16,111 @@ interface Voucher {
   expiryDate: string;
 }
 
+const LABEL = 'font-caption text-[11px] font-bold uppercase tracking-[0.1em] text-ink-soft';
+const FIELD =
+  'bg-surface border border-line rounded-sm px-3.5 h-[54px] font-body text-lg text-ink focus:outline-none focus:border-accent w-full';
+const BUTTON =
+  'bg-accent hover:opacity-90 text-cream font-caption text-sm font-semibold px-6 py-3.5 rounded-sm transition-opacity cursor-pointer disabled:opacity-50';
+
 @Component({
   selector: 'app-wallet',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PortalShellComponent],
   template: `
-    <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased md:flex-row">
-      <!-- Sidebar Navigation -->
-      <aside class="w-full md:w-64 bg-stone-900 text-stone-400 p-6 flex flex-col justify-between border-r border-stone-800">
-        <div class="flex flex-col gap-8">
-          <div class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
-            <span>Kredo</span><span class="text-primary font-bold text-2xl">.</span>
+    <app-portal-shell [status]="hasFacility() ? 'Facility active' : 'No facility yet'">
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+        <div class="flex flex-col gap-2">
+          <span class="font-caption text-xs font-bold uppercase tracking-[0.14em] text-accent">Closed-loop vouchers</span>
+          <h1 class="font-heading text-4xl md:text-5xl leading-[1.05] text-ink">Voucher wallet</h1>
+        </div>
+        <div class="border border-line rounded-sm px-4 py-3 flex flex-col gap-0.5 shrink-0">
+          <span class="${LABEL}">Available limit</span>
+          <span class="font-heading text-2xl text-ink">R {{ availableLimit() / 100 | number : '1.0-0' }}</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Drawdown form -->
+        <div class="lg:col-span-5 bg-surface-tint rounded-sm p-7 flex flex-col gap-4">
+          <h2 class="font-heading text-3xl text-ink">Drawdown request</h2>
+
+          <div class="flex flex-col gap-2">
+            <label class="${LABEL}">Retail merchant</label>
+            <select [(ngModel)]="drawdown.merchantName" class="${FIELD} appearance-none">
+              <option value="">— Choose store —</option>
+              <option value="Shoprite">Shoprite / Checkers</option>
+              <option value="PickNPay">Pick n Pay</option>
+              <option value="VanSchaik">Van Schaik Bookstore</option>
+              <option value="Boxer">Boxer Superstores</option>
+            </select>
           </div>
 
-          <nav class="flex flex-col gap-2 font-medium text-sm">
-            <a (click)="goTo('/dashboard')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>📊</span> Dashboard
-            </a>
-            <a (click)="goTo('/wallet')" class="flex items-center gap-3 bg-stone-800 text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>💳</span> Voucher Wallet
-            </a>
-            <a (click)="goTo('/repayments')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>💸</span> Repayments
-            </a>
-            <a (click)="goTo('/progress')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>📈</span> Credit Progress
-            </a>
-          </nav>
-        </div>
+          <div class="flex flex-col gap-2">
+            <label class="${LABEL}">Voucher value (R)</label>
+            <input type="number" [(ngModel)]="drawdown.amount" class="${FIELD}" placeholder="e.g. 500" />
+          </div>
 
-        <div class="pt-6 border-t border-stone-800 flex flex-col gap-4">
-          <button (click)="logout()" class="text-left text-xs font-semibold hover:text-white flex items-center gap-2 text-stone-500 transition-all cursor-pointer">
-            <span>🚪</span> Sign Out
+          <div class="bg-surface border-l-[3px] border-accent p-4">
+            <p class="font-body text-base leading-snug text-ink-soft">
+              Vouchers are closed-loop and only redeemable at the selected partner retailer within
+              your approved facility.
+            </p>
+          </div>
+
+          @if (error()) {
+            <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+          }
+
+          <button (click)="submitDrawdown()" [disabled]="loading()" class="${BUTTON} w-fit">
+            {{ loading() ? 'Issuing voucher…' : 'Generate retail voucher' }}
           </button>
         </div>
-      </aside>
 
-      <!-- Main Workspace -->
-      <main class="flex-1 flex flex-col">
-        <!-- Top Header -->
-        <header class="bg-white border-b border-stone-200/60 p-6 flex justify-between items-center">
-          <h1 class="text-2xl font-extrabold tracking-tight">Voucher Wallet</h1>
-          <div class="bg-stone-100 border border-stone-200 text-stone-700 text-xs font-bold px-3 py-1.5 rounded-xl">
-            Available Limit: R{{ availableLimit() / 100 | number:'1.2-2' }}
-          </div>
-        </header>
+        <!-- Voucher list -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <h2 class="font-heading text-3xl text-ink">My vouchers</h2>
 
-        <!-- Content Area -->
-        <div class="p-6 md:p-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 max-w-5xl">
-          
-          <!-- Drawdown Form panel -->
-          <div class="lg:col-span-5 bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-            <h3 class="font-extrabold text-lg text-stone-900 border-b border-stone-100 pb-2">Drawdown Request</h3>
-            
-            <div class="flex flex-col gap-1">
-              <label class="text-xs font-bold text-stone-500">Select Retail Merchant</label>
-              <select [(ngModel)]="drawdown.merchantName" class="border border-stone-300 rounded-xl p-3 text-sm focus:outline-none bg-white">
-                <option value="">-- Choose Store --</option>
-                <option value="Shoprite">Shoprite / Checkers</option>
-                <option value="PickNPay">Pick n Pay</option>
-                <option value="VanSchaik">Van Schaik Bookstore</option>
-                <option value="Boxer">Boxer Superstores</option>
-              </select>
+          @if (vouchers().length === 0) {
+            <div class="border border-line rounded-sm p-10 text-center flex flex-col gap-2">
+              <span class="font-heading text-2xl text-ink">No vouchers yet</span>
+              <span class="font-body text-base text-ink-soft">Request a drawdown on the left to issue your first voucher.</span>
             </div>
+          }
 
-            <div class="flex flex-col gap-1">
-              <label class="text-xs font-bold text-stone-500">Voucher Value (R)</label>
-              <input type="number" [(ngModel)]="drawdown.amount" class="border border-stone-300 rounded-xl p-3 text-sm focus:outline-none" placeholder="e.g. 500" />
-            </div>
-
-            <p *ngIf="error()" class="text-xs text-red-600 font-semibold mt-1">{{ error() }}</p>
-
-            <button (click)="submitDrawdown()" [disabled]="loading()" class="w-full bg-primary hover:bg-primary/95 text-white font-bold py-4 rounded-2xl transition-all shadow-md mt-2 flex items-center justify-center cursor-pointer">
-              {{ loading() ? 'Issuing Voucher...' : 'Generate Retail Voucher' }}
-            </button>
-          </div>
-
-          <!-- Active Vouchers List -->
-          <div class="lg:col-span-7 flex flex-col gap-6">
-            <h3 class="font-extrabold text-lg text-stone-900 border-b border-stone-100 pb-2">My Vouchers</h3>
-
-            <div *ngIf="vouchers().length === 0" class="bg-white border border-stone-200 rounded-3xl p-10 text-center text-stone-400 text-sm shadow-sm flex flex-col items-center gap-3">
-              <span class="text-3xl">🎫</span>
-              <span>No vouchers generated yet. Request a drawdown on the left.</span>
-            </div>
-
-            <div *ngFor="let voucher of vouchers()" class="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row gap-6 items-center justify-between hover:shadow-md transition-all relative overflow-hidden">
-              <!-- Left: details -->
-              <div class="flex flex-col gap-2.5 w-full sm:w-2/3">
-                <div class="flex items-center gap-2">
-                  <span class="text-sm font-bold text-stone-900">{{ voucher.merchantName }} Voucher</span>
-                  <span [class.bg-emerald-50]="voucher.status === 'ISSUED'" [class.text-emerald-700]="voucher.status === 'ISSUED'" [class.bg-stone-100]="voucher.status === 'REDEEMED'" [class.text-stone-500]="voucher.status === 'REDEEMED'" class="text-[9px] font-bold px-2 py-0.5 rounded-full uppercase border">
-                    {{ voucher.status }}
+          @for (voucher of vouchers(); track voucher.code) {
+            <div class="border border-line rounded-sm p-6 flex flex-col sm:flex-row gap-6 justify-between">
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-3">
+                  <span class="font-heading text-2xl text-ink">{{ voucher.merchantName }}</span>
+                  <span class="inline-flex items-center gap-2 bg-surface-tint rounded-sm px-2.5 py-1">
+                    <span class="h-2 w-2 rounded-full" [class]="voucher.status === 'ISSUED' ? 'bg-accent' : 'bg-line'"></span>
+                    <span class="font-caption text-xs font-bold text-ink">{{ voucher.status }}</span>
                   </span>
                 </div>
-                <div class="text-xl font-black text-stone-950">R{{ voucher.amount / 100 | number:'1.2-2' }}</div>
-                <div class="text-[10px] text-stone-400 font-mono mt-1">Code: <strong class="text-stone-800 select-all">{{ voucher.code }}</strong></div>
-                <div class="text-[10px] text-stone-400 mt-0.5">Expires: {{ voucher.expiryDate | date:'mediumDate' }}</div>
+                <span class="font-heading text-3xl text-ink">R{{ voucher.amount / 100 | number : '1.2-2' }}</span>
+                <span class="font-caption text-xs text-ink-soft">Code: <strong class="text-ink select-all">{{ voucher.code }}</strong></span>
+                <span class="font-caption text-xs text-ink-soft">Expires: {{ voucher.expiryDate | date : 'mediumDate' }}</span>
               </div>
 
-              <!-- Right: Scan QR / Simulate POS -->
-              <div class="flex flex-col items-center gap-2 bg-stone-50 border border-stone-200/60 p-4 rounded-2xl w-full sm:w-1/3">
-                <!-- Mock QR rendering box -->
-                <div class="w-24 h-24 bg-white border border-stone-300 p-2 flex items-center justify-center flex-col gap-1">
-                  <span class="text-2xl">📱</span>
-                  <span class="text-[8px] font-bold text-stone-400">QR CODE</span>
+              <div class="flex flex-col items-center justify-center gap-3 bg-surface-tint rounded-sm p-4 sm:w-40">
+                <div class="w-20 h-20 bg-surface border border-line flex items-center justify-center">
+                  <span class="font-caption text-[9px] font-bold text-ink-soft text-center">QR<br />{{ voucher.code.slice(0, 7) }}</span>
                 </div>
-                <button *ngIf="voucher.status === 'ISSUED'" (click)="simulateRedeem(voucher.code)" class="text-[10px] bg-stone-200 hover:bg-stone-300 font-semibold py-1.5 px-3 rounded-lg border border-stone-300 transition-all cursor-pointer">
-                  Simulate Scan/POS
-                </button>
+                @if (voucher.status === 'ISSUED') {
+                  <button
+                    (click)="simulateRedeem(voucher.code)"
+                    class="font-caption text-[11px] font-bold border border-line hover:border-accent rounded-sm px-3 py-1.5 text-ink transition-colors cursor-pointer"
+                  >
+                    Simulate POS scan
+                  </button>
+                }
               </div>
             </div>
-          </div>
-
+          }
         </div>
-      </main>
-    </div>
+      </div>
+    </app-portal-shell>
   `,
 })
 export class WalletComponent implements OnInit {
@@ -138,9 +128,10 @@ export class WalletComponent implements OnInit {
   private router = inject(Router);
 
   consumerId = signal<string>('consumer-uuid');
-  facilityLimit = signal(150000);
+  facilityLimit = signal(0);
   utilisedLimit = signal(0);
-  
+  hasFacility = signal(false);
+
   availableLimit = computed(() => this.facilityLimit() - this.utilisedLimit());
 
   vouchers = signal<Voucher[]>([]);
@@ -157,21 +148,26 @@ export class WalletComponent implements OnInit {
     if (storedId) {
       this.consumerId.set(storedId);
     }
-    this.fetchLimits();
+    this.fetchFacility();
+    this.fetchVouchers();
   }
 
-  private fetchLimits() {
-    // 1. Fetch Plan details to set limit
-    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/subscriptions/status?consumerId=${this.consumerId()}`).subscribe({
+  private fetchFacility() {
+    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/credit/facility?consumerId=${this.consumerId()}`).subscribe({
       next: (res) => {
-        if (res.planCode === 'STUDENT_PREMIUM') {
-          this.facilityLimit.set(350000);
+        if (res.status === 'ACTIVE') {
+          this.hasFacility.set(true);
+          this.facilityLimit.set(res.totalLimit);
+          this.utilisedLimit.set(res.utilisedLimit);
         }
       },
     });
+  }
 
-    // 2. We can pull vouchers and calculate actual utilised limits from them
-    // For now we will mock fetch from database or calculate from the list.
+  private fetchVouchers() {
+    this.http.get<Voucher[]>(`${environment.apiBaseUrl}/api/v1/credit/vouchers?consumerId=${this.consumerId()}`).subscribe({
+      next: (list) => this.vouchers.set(list || []),
+    });
   }
 
   submitDrawdown() {
@@ -225,14 +221,5 @@ export class WalletComponent implements OnInit {
         );
       },
     });
-  }
-
-  goTo(path: string) {
-    this.router.navigate([path]);
-  }
-
-  logout() {
-    sessionStorage.clear();
-    this.router.navigate(['/apply']);
   }
 }

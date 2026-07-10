@@ -95,6 +95,7 @@ export class SubscriptionController {
       subscriptionId: sub.id,
       planCode: sub.planCode,
       status: sub.status,
+      nextBilling: sub.nextBilling ?? null,
       mandateStatus: mandate ? mandate.status : null,
     };
   }

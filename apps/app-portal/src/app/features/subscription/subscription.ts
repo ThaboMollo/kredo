@@ -3,122 +3,140 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { WizardShellComponent } from '../../shared/wizard-shell';
 import { environment } from '../../../environments/environment';
 
 type SubView = 'PLANS' | 'BANK' | 'WAITING';
 
+const LABEL = 'font-caption text-[11px] font-bold uppercase tracking-[0.1em] text-ink-soft';
+const FIELD =
+  'bg-surface border border-line rounded-sm px-3.5 h-[54px] font-body text-lg text-ink focus:outline-none focus:border-accent w-full';
+const BUTTON =
+  'bg-accent hover:opacity-90 text-cream font-caption text-sm font-semibold px-6 py-3.5 rounded-sm transition-opacity cursor-pointer disabled:opacity-50';
+
 @Component({
   selector: 'app-subscription',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, WizardShellComponent],
   template: `
-    <div class="min-h-screen bg-stone-50 text-stone-900 flex items-center justify-center p-6 antialiased">
-      <div class="bg-white/80 backdrop-blur-xl border border-stone-200 shadow-2xl rounded-3xl w-full max-w-xl p-8 md:p-10 flex flex-col gap-6 relative overflow-hidden">
-        
-        <!-- Background decorative blur -->
-        <div class="absolute -top-24 -right-24 h-48 w-48 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+    <app-wizard-shell [active]="3" [eyebrow]="eyebrow()" [heading]="heading()">
+      <!-- View 1: PLANS -->
+      @if (view() === 'PLANS') {
+        <div class="flex flex-col gap-6 max-w-3xl">
+          <p class="font-body text-lg text-ink-soft max-w-xl">
+            Our facilities are interest-free. You only pay a fixed monthly subscription, collected
+            by DebiCheck.
+          </p>
 
-        <!-- View 1: PLANS -->
-        <div *ngIf="view() === 'PLANS'" class="flex flex-col gap-5">
-          <div>
-            <h2 class="text-3xl font-extrabold tracking-tight text-stone-900">Select a subscription plan</h2>
-            <p class="text-sm text-stone-500 mt-1">Our facilities are interest-free. We only charge a fixed monthly subscription.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <button
+              (click)="selectPlan('STUDENT_BASIC')"
+              class="text-left rounded-sm p-6 cursor-pointer flex flex-col gap-3 border transition-colors"
+              [class]="selectedPlan() === 'STUDENT_BASIC' ? 'border-accent bg-surface-tint' : 'border-line bg-surface'"
+            >
+              <span class="font-caption text-sm font-bold text-accent">Starter</span>
+              <span class="font-heading text-4xl text-ink">R59 <span class="text-lg text-ink-soft">/ month</span></span>
+              <p class="font-body text-base leading-snug text-ink-soft">
+                A revolving retail credit facility of up to <strong class="text-ink">R1 500</strong>.
+              </p>
+            </button>
+
+            <button
+              (click)="selectPlan('STUDENT_PREMIUM')"
+              class="text-left rounded-sm p-6 cursor-pointer flex flex-col gap-3 border transition-colors"
+              [class]="selectedPlan() === 'STUDENT_PREMIUM' ? 'border-accent bg-surface-tint' : 'border-line bg-surface'"
+            >
+              <span class="font-caption text-sm font-bold text-accent">Builder</span>
+              <span class="font-heading text-4xl text-ink">R99 <span class="text-lg text-ink-soft">/ month</span></span>
+              <p class="font-body text-base leading-snug text-ink-soft">
+                A revolving retail credit facility of up to <strong class="text-ink">R3 500</strong>.
+              </p>
+            </button>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-            <!-- Basic Plan Card -->
-            <div (click)="selectPlan('STUDENT_BASIC')" [class.border-primary]="selectedPlan() === 'STUDENT_BASIC'" class="bg-white border-2 border-stone-200 hover:border-primary rounded-2xl p-6 cursor-pointer flex flex-col gap-3 transition-all relative">
-              <span class="text-xs font-bold text-stone-400 uppercase tracking-widest">Basic</span>
-              <div class="text-2xl font-bold text-stone-900">R59<span class="text-xs text-stone-400">/mo</span></div>
-              <p class="text-xs text-stone-500">Includes a revolving retail credit facility limit of up to <strong>R1 500</strong>.</p>
-            </div>
+          @if (error()) {
+            <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+          }
 
-            <!-- Premium Plan Card -->
-            <div (click)="selectPlan('STUDENT_PREMIUM')" [class.border-primary]="selectedPlan() === 'STUDENT_PREMIUM'" class="bg-white border-2 border-stone-200 hover:border-primary rounded-2xl p-6 cursor-pointer flex flex-col gap-3 transition-all relative">
-              <span class="text-xs font-bold text-primary uppercase tracking-widest">Premium</span>
-              <div class="text-2xl font-bold text-stone-900">R99<span class="text-xs text-stone-400">/mo</span></div>
-              <p class="text-xs text-stone-500">Includes a revolving retail credit facility limit of up to <strong>R3 500</strong>.</p>
-            </div>
-          </div>
-
-          <button (click)="proceedToBank()" [disabled]="!selectedPlan()" class="w-full bg-primary hover:bg-primary/95 text-white font-bold py-4 rounded-2xl transition-all shadow-md mt-4 cursor-pointer disabled:opacity-50">
-            Proceed to Payment Details
+          <button (click)="proceedToBank()" [disabled]="!selectedPlan()" class="${BUTTON} w-fit">
+            Continue to DebiCheck setup
           </button>
         </div>
+      }
 
-        <!-- View 2: BANK -->
-        <div *ngIf="view() === 'BANK'" class="flex flex-col gap-4">
-          <div>
-            <h2 class="text-3xl font-extrabold tracking-tight text-stone-900">Configure DebiCheck</h2>
-            <p class="text-sm text-stone-500 mt-1">Authenticate your debit order details to secure your monthly plan payments.</p>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-stone-500">Select Bank</label>
-            <select [(ngModel)]="bankDetails.bankCode" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none bg-white">
-              <option value="">-- Choose Bank --</option>
-              <option value="FNB">First National Bank (FNB)</option>
-              <option value="StandardBank">Standard Bank</option>
+      <!-- View 2: BANK -->
+      @if (view() === 'BANK') {
+        <div class="bg-surface-tint rounded-sm p-7 flex flex-col gap-4 w-full max-w-xl">
+          <div class="flex flex-col gap-2">
+            <label class="${LABEL}">Bank</label>
+            <select [(ngModel)]="bankDetails.bankCode" class="${FIELD} appearance-none">
+              <option value="">— Choose your bank —</option>
+              <option value="FNB">FNB</option>
+              <option value="Standard Bank">Standard Bank</option>
               <option value="Capitec">Capitec</option>
+              <option value="Absa">Absa</option>
               <option value="Nedbank">Nedbank</option>
-              <option value="Absa">ABSA</option>
+              <option value="TymeBank">TymeBank</option>
             </select>
           </div>
 
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-stone-500">Account Number</label>
-            <input type="text" [(ngModel)]="bankDetails.accountNumber" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="e.g. 62123456789" />
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-stone-500">Branch Code</label>
-            <input type="text" [(ngModel)]="bankDetails.branchCode" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="e.g. 250655" />
-          </div>
-
-          <p *ngIf="error()" class="text-xs text-red-600 font-semibold mt-1">{{ error() }}</p>
-
-          <button (click)="submitDebiCheck()" [disabled]="loading()" class="w-full bg-primary hover:bg-primary/95 text-white font-bold py-4 rounded-2xl transition-all shadow-md mt-4 flex items-center justify-center cursor-pointer">
-            {{ loading() ? 'Initiating DebiCheck...' : 'Initialize Mandate' }}
-          </button>
-        </div>
-
-        <!-- View 3: WAITING -->
-        <div *ngIf="view() === 'WAITING'" class="flex flex-col gap-6 text-center py-4">
-          <div class="relative w-16 h-16 mx-auto flex items-center justify-center">
-            <div class="absolute inset-0 border-4 border-stone-100 rounded-full"></div>
-            <div class="absolute inset-0 border-4 border-t-primary animate-spin rounded-full"></div>
-          </div>
-
           <div class="flex flex-col gap-2">
-            <h2 class="text-2xl font-extrabold tracking-tight">Approve Mandate</h2>
-            <p class="text-sm text-stone-500">We initiated a DebiCheck request with reference <strong>{{ mandateRef() }}</strong></p>
+            <label class="${LABEL}">Account number</label>
+            <input type="text" [(ngModel)]="bankDetails.accountNumber" class="${FIELD}" placeholder="62000000000" />
           </div>
 
-          <div class="bg-stone-50 border border-stone-200 p-6 rounded-2xl flex flex-col gap-3 text-left">
-            <h4 class="text-xs font-bold text-stone-500 uppercase tracking-widest">How to approve:</h4>
-            <ol class="text-xs text-stone-600 list-decimal list-inside flex flex-col gap-2 leading-relaxed">
-              <li>Open your <strong>{{ bankDetails.bankCode }}</strong> banking application.</li>
-              <li>Navigate to <strong>Debits / Mandates / DebiCheck</strong>.</li>
-              <li>Review the details for Kalahari and click <strong>Approve</strong>.</li>
-              <li>Or Dial your bank's USSD authentication code (e.g. *120*229#) if requested.</li>
-            </ol>
+          <div class="bg-surface border-l-[3px] border-accent p-4 flex flex-col gap-1.5">
+            <span class="font-caption text-xs font-bold text-accent">DebiCheck authenticated mandate</span>
+            <p class="font-body text-base leading-snug text-ink-soft">
+              Your bank will ask you to approve the mandate before any collection happens. Account
+              details are encrypted at rest.
+            </p>
           </div>
 
-          <div class="text-xs text-stone-400 flex flex-col gap-1">
-            <span>Waiting for your bank's approval confirmation...</span>
-            <span class="text-[10px] text-stone-300">(Checks automatically every 5 seconds)</span>
-          </div>
+          @if (error()) {
+            <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+          }
 
-          <p *ngIf="error()" class="text-xs text-red-600 font-semibold">{{ error() }}</p>
-
-          <!-- Mock simulation button for testing -->
-          <button (click)="simulateMockApproval()" class="text-xs bg-stone-100 text-stone-600 hover:bg-stone-200 font-semibold py-2 px-4 rounded-xl border border-stone-300 mt-2 mx-auto cursor-pointer">
-            Simulate Mandate Approval (Mock Sandbox)
+          <button (click)="submitDebiCheck()" [disabled]="loading()" class="${BUTTON} w-fit">
+            {{ loading() ? 'Initiating…' : 'Create DebiCheck mandate' }}
           </button>
         </div>
+      }
 
-      </div>
-    </div>
+      <!-- View 3: WAITING -->
+      @if (view() === 'WAITING') {
+        <div class="bg-surface-tint rounded-sm p-7 flex flex-col gap-4 w-full max-w-xl">
+          <span class="inline-flex items-center gap-2 bg-surface rounded-sm px-2.5 py-1.5 w-fit">
+            <span class="h-2 w-2 rounded-full bg-accent animate-pulse"></span>
+            <span class="font-caption text-xs font-bold text-ink">Waiting for bank approval</span>
+          </span>
+
+          <p class="font-body text-lg text-ink-soft">
+            Mandate reference <strong class="text-ink">{{ mandateRef() }}</strong> was sent to your bank.
+          </p>
+
+          <ol class="font-body text-base text-ink-soft leading-relaxed list-decimal pl-5 flex flex-col gap-1">
+            <li>Open your <strong class="text-ink">{{ bankDetails.bankCode }}</strong> banking application.</li>
+            <li>Navigate to <strong class="text-ink">Debits / Mandates / DebiCheck</strong>.</li>
+            <li>Review the details for Kalahari and approve.</li>
+            <li>Or dial your bank's USSD authentication code (e.g. *120*229#) if requested.</li>
+          </ol>
+
+          <p class="font-caption text-xs text-ink-soft">Status is checked automatically every 5 seconds.</p>
+
+          @if (error()) {
+            <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+          }
+
+          <button
+            (click)="simulateMockApproval()"
+            class="border border-line hover:border-accent text-ink font-caption text-xs font-semibold px-4 py-2.5 rounded-sm transition-colors cursor-pointer w-fit"
+          >
+            Simulate mandate approval (sandbox)
+          </button>
+        </div>
+      }
+    </app-wizard-shell>
   `,
 })
 export class SubscriptionComponent {
@@ -144,11 +162,9 @@ export class SubscriptionComponent {
   constructor() {
     // Retrieve consumerId from sessionStorage (set during onboarding)
     const storedId = sessionStorage.getItem('kredo_consumer_id');
-    // If not found in session, we will default to a fallback for testing (or raise error)
     if (storedId) {
       this.consumerId.set(storedId);
     } else {
-      // Create a default session ID if missing for development flow ease
       this.consumerId.set('consumer-uuid');
     }
 
@@ -157,6 +173,22 @@ export class SubscriptionComponent {
       onCleanup(() => this.stopPolling());
     });
   }
+
+  eyebrow = computed(() => {
+    switch (this.view()) {
+      case 'PLANS': return 'Subscription';
+      case 'BANK': return 'DebiCheck mandate';
+      case 'WAITING': return 'Bank authentication';
+    }
+  });
+
+  heading = computed(() => {
+    switch (this.view()) {
+      case 'PLANS': return 'Select a subscription plan.';
+      case 'BANK': return 'Set up your debit order.';
+      case 'WAITING': return 'Approve the mandate in your bank app.';
+    }
+  });
 
   selectPlan(plan: string) {
     this.selectedPlan.set(plan);

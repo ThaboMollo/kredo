@@ -1,81 +1,77 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { PortalShellComponent } from '../../shared/portal-shell';
 import { environment } from '../../../environments/environment';
+
+const LABEL = 'font-caption text-[11px] font-bold uppercase tracking-[0.1em] text-ink-soft';
+const BUTTON =
+  'bg-accent hover:opacity-90 text-cream font-caption text-sm font-semibold px-6 py-3.5 rounded-sm transition-opacity cursor-pointer disabled:opacity-50';
 
 @Component({
   selector: 'app-repayments',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PortalShellComponent],
   template: `
-    <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased md:flex-row">
-      <!-- Sidebar Navigation -->
-      <aside class="w-full md:w-64 bg-stone-900 text-stone-400 p-6 flex flex-col justify-between border-r border-stone-800">
-        <div class="flex flex-col gap-8">
-          <div class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
-            <span>Kredo</span><span class="text-primary font-bold text-2xl">.</span>
+    <app-portal-shell>
+      <div class="flex flex-col gap-2">
+        <span class="font-caption text-xs font-bold uppercase tracking-[0.14em] text-accent">On-time behaviour builds history</span>
+        <h1 class="font-heading text-4xl md:text-5xl leading-[1.05] text-ink">Repayments</h1>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- DebiCheck schedule -->
+        <div class="lg:col-span-6 bg-surface-tint rounded-sm p-7 flex flex-col gap-4">
+          <h2 class="font-heading text-3xl text-ink">Scheduled collection</h2>
+          <p class="font-body text-lg leading-relaxed text-ink-soft">
+            Your DebiCheck mandate collects the subscription fee and any drawn balance
+            automatically each month. Successful collections are recorded to the ledger and count
+            toward your bureau-reported behaviour.
+          </p>
+          <div class="bg-surface border-l-[3px] border-accent p-4">
+            <p class="font-body text-base leading-snug text-ink-soft">
+              Collections run on your billing date. If a collection fails, you enter a grace
+              window before any arrears process starts — humane by design.
+            </p>
           </div>
-
-          <nav class="flex flex-col gap-2 font-medium text-sm">
-            <a (click)="goTo('/dashboard')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>📊</span> Dashboard
-            </a>
-            <a (click)="goTo('/wallet')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>💳</span> Voucher Wallet
-            </a>
-            <a (click)="goTo('/repayments')" class="flex items-center gap-3 bg-stone-800 text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>💸</span> Repayments
-            </a>
-            <a (click)="goTo('/progress')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>📈</span> Credit Progress
-            </a>
-          </nav>
         </div>
 
-        <div class="pt-6 border-t border-stone-800 flex flex-col gap-4">
-          <button (click)="logout()" class="text-left text-xs font-semibold hover:text-white flex items-center gap-2 text-stone-500 transition-all cursor-pointer">
-            <span>🚪</span> Sign Out
-          </button>
-        </div>
-      </aside>
-
-      <!-- Main Workspace -->
-      <main class="flex-1 flex flex-col">
-        <!-- Top Header -->
-        <header class="bg-white border-b border-stone-200/60 p-6 flex justify-between items-center">
-          <h1 class="text-2xl font-extrabold tracking-tight">Repayments & Statements</h1>
-        </header>
-
-        <!-- Content Area -->
-        <div class="p-6 md:p-8 flex-1 flex flex-col gap-6 max-w-4xl">
-          <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-            <h3 class="font-extrabold text-stone-950">Payment Sandbox Simulation</h3>
-            <p class="text-xs text-stone-500">Initiate a mock R500 card repayment to test the double-entry ledger integration.</p>
-            
-            <button (click)="payNowMock()" [disabled]="paying()" class="w-fit bg-primary hover:bg-primary/95 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all cursor-pointer">
-              {{ paying() ? 'Processing...' : 'Simulate R500 Payment' }}
+        <!-- Pay now -->
+        <div class="lg:col-span-6 flex flex-col gap-4">
+          <div class="border border-line rounded-sm p-6 flex flex-col gap-3">
+            <h2 class="font-heading text-3xl text-ink">Pay now</h2>
+            <p class="font-body text-base leading-relaxed text-ink-soft">
+              Settle ahead of your DebiCheck date with an instant card or EFT payment. The sandbox
+              posts a R500 repayment straight to the ledger.
+            </p>
+            @if (paid()) {
+              <span class="inline-flex items-center gap-2 bg-surface-tint rounded-sm px-2.5 py-1.5 w-fit">
+                <span class="h-2 w-2 rounded-full bg-accent"></span>
+                <span class="font-caption text-xs font-bold text-ink">Repayment posted to ledger</span>
+              </span>
+            }
+            <button (click)="payNowMock()" [disabled]="paying()" class="${BUTTON} w-fit">
+              {{ paying() ? 'Processing…' : 'Pay R500 now (sandbox)' }}
             </button>
           </div>
 
-          <!-- History List -->
-          <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-            <h3 class="font-extrabold text-stone-950">Monthly Statements</h3>
-            <div class="text-xs text-stone-400 py-6 text-center">
-              📜 No billing statements generated yet. Statements compile monthly.
-            </div>
+          <div class="border border-line rounded-sm p-6 flex flex-col gap-3">
+            <h2 class="font-heading text-3xl text-ink">Monthly statements</h2>
+            <p class="font-body text-base text-ink-soft">
+              No billing statements generated yet. Statements compile monthly.
+            </p>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </app-portal-shell>
   `,
 })
 export class RepaymentsComponent implements OnInit {
   private http = inject(HttpClient);
-  private router = inject(Router);
 
   consumerId = signal<string>('consumer-uuid');
   paying = signal(false);
+  paid = signal(false);
 
   ngOnInit() {
     const storedId = sessionStorage.getItem('kredo_consumer_id');
@@ -101,21 +97,12 @@ export class RepaymentsComponent implements OnInit {
         }).subscribe({
           next: () => {
             this.paying.set(false);
-            alert('Mock repayment of R500 processed successfully! Ledger transaction posted.');
+            this.paid.set(true);
           },
           error: () => this.paying.set(false),
         });
       },
       error: () => this.paying.set(false),
     });
-  }
-
-  goTo(path: string) {
-    this.router.navigate([path]);
-  }
-
-  logout() {
-    sessionStorage.clear();
-    this.router.navigate(['/apply']);
   }
 }

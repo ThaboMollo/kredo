@@ -1,164 +1,180 @@
-import { Component, ElementRef, ViewChild, inject, signal, computed, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { WizardShellComponent } from '../../shared/wizard-shell';
 import { environment } from '../../../environments/environment';
 
 type CreditView = 'AFFORDABILITY' | 'QUOTE' | 'SIGNING' | 'SUCCESS';
 
+const LABEL = 'font-caption text-[11px] font-bold uppercase tracking-[0.1em] text-ink-soft';
+const FIELD =
+  'bg-surface border border-line rounded-sm px-3.5 h-[54px] font-body text-lg text-ink focus:outline-none focus:border-accent w-full';
+const BUTTON =
+  'bg-accent hover:opacity-90 text-cream font-caption text-sm font-semibold px-6 py-3.5 rounded-sm transition-opacity cursor-pointer disabled:opacity-50';
+const BUTTON_SECONDARY =
+  'border border-line hover:border-accent text-ink font-caption text-sm font-semibold px-6 py-3.5 rounded-sm transition-colors cursor-pointer';
+
 @Component({
   selector: 'app-credit-wizard',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, WizardShellComponent],
   template: `
-    <div class="min-h-screen bg-stone-50 text-stone-900 flex items-center justify-center p-6 antialiased">
-      <div class="bg-white/80 backdrop-blur-xl border border-stone-200 shadow-2xl rounded-3xl w-full max-w-xl p-8 md:p-10 flex flex-col gap-6 relative overflow-hidden">
-        
-        <!-- Background decorative blur -->
-        <div class="absolute -top-24 -right-24 h-48 w-48 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+    <app-wizard-shell [active]="wizardStep()" [eyebrow]="eyebrow()" [heading]="heading()">
+      <!-- View 1: AFFORDABILITY -->
+      @if (view() === 'AFFORDABILITY') {
+        <div class="flex flex-col lg:flex-row gap-7 items-start">
+          <div class="bg-surface-tint rounded-sm p-7 flex flex-col gap-4 w-full max-w-xl">
+            <h2 class="font-heading text-3xl text-ink">Income, expenses, and obligations</h2>
 
-        <!-- Progress Indicator -->
-        <div *ngIf="view() !== 'SUCCESS'" class="flex items-center justify-between text-xs font-semibold text-stone-400 uppercase tracking-wider">
-          <span>{{ currentStepTitle() }}</span>
-          <span>Step {{ currentStepIndex() }} of 3</span>
-        </div>
-        <div *ngIf="view() !== 'SUCCESS'" class="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden">
-          <div class="bg-primary h-full transition-all duration-300" [style.width.%]="progressPercentage()"></div>
-        </div>
-
-        <!-- View 1: AFFORDABILITY -->
-        <div *ngIf="view() === 'AFFORDABILITY'" class="flex flex-col gap-4">
-          <div>
-            <h2 class="text-3xl font-extrabold tracking-tight">Affordability Assessment</h2>
-            <p class="text-sm text-stone-500 mt-1">NCA s81 check. Please declare your monthly financial details.</p>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-stone-500">Gross Monthly Income (R)</label>
-            <input type="number" [(ngModel)]="affordability.grossIncome" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="e.g. 5000" />
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-stone-500">Declared Monthly Expenses (R)</label>
-            <input type="number" [(ngModel)]="affordability.declaredExpenses" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="e.g. 2000" />
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-stone-500">Other Debt Obligations (R)</label>
-            <input type="number" [(ngModel)]="affordability.bureauObligations" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="e.g. 500" />
-          </div>
-
-          <p *ngIf="error()" class="text-xs text-red-600 font-semibold mt-1">{{ error() }}</p>
-
-          <button (click)="submitAffordability()" [disabled]="loading()" class="w-full bg-primary hover:bg-primary/95 text-white font-bold py-4 rounded-2xl transition-all shadow-md mt-4 flex items-center justify-center cursor-pointer">
-            {{ loading() ? 'Evaluating...' : 'Run Credit Assessment' }}
-          </button>
-        </div>
-
-        <!-- View 2: QUOTE -->
-        <div *ngIf="view() === 'QUOTE'" class="flex flex-col gap-5">
-          <div>
-            <h2 class="text-3xl font-extrabold tracking-tight text-stone-900">Pre-Agreement Quote</h2>
-            <p class="text-sm text-stone-500 mt-1">Review the approved credit limit and statutory fee schedule.</p>
-          </div>
-
-          <div class="bg-stone-50 border border-stone-200/80 rounded-2xl p-6 flex flex-col gap-4">
-            <div class="flex justify-between items-baseline border-b border-stone-200 pb-3">
-              <span class="text-sm font-semibold text-stone-500">Approved Credit Limit</span>
-              <span class="text-2xl font-black text-stone-950">R{{ approvedLimit() | number:'1.2-2' }}</span>
+            <div class="flex flex-col gap-2">
+              <label class="${LABEL}">Gross monthly income (R)</label>
+              <input type="number" [(ngModel)]="affordability.grossIncome" class="${FIELD}" placeholder="e.g. 4 200" />
             </div>
 
-            <div class="flex flex-col gap-2.5 text-xs text-stone-600">
-              <div class="flex justify-between">
-                <span>Initiation Fee (One-off)</span>
-                <span>R0.00</span>
+            <div class="flex flex-col gap-2">
+              <label class="${LABEL}">Declared monthly expenses (R)</label>
+              <input type="number" [(ngModel)]="affordability.declaredExpenses" class="${FIELD}" placeholder="e.g. 1 500" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="${LABEL}">Existing obligations (R)</label>
+              <input type="number" [(ngModel)]="affordability.bureauObligations" class="${FIELD}" placeholder="e.g. 650" />
+            </div>
+
+            <div class="bg-surface border-l-[3px] border-accent p-4 flex flex-col gap-1.5">
+              <span class="font-caption text-xs font-bold text-accent">Client does not calculate the offer</span>
+              <p class="font-body text-base leading-snug text-ink-soft">
+                Fee, limit, and agreement values return from the backend quote service and are
+                snapshotted into the signed agreement.
+              </p>
+            </div>
+
+            @if (error()) {
+              <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+            }
+
+            <button (click)="submitAffordability()" [disabled]="loading()" class="${BUTTON} w-fit">
+              {{ loading() ? 'Evaluating…' : 'Run assessment' }}
+            </button>
+          </div>
+
+          <div class="border border-line rounded-sm p-5 flex flex-col gap-3 w-full max-w-sm">
+            <h3 class="font-heading text-2xl text-ink">Required state handling</h3>
+            @for (state of stateNotes; track state) {
+              <div class="flex items-start gap-2.5">
+                <span class="h-1.5 w-1.5 rounded-full bg-accent mt-2 shrink-0"></span>
+                <span class="font-body text-base leading-snug text-ink-soft">{{ state }}</span>
               </div>
-              <div class="flex justify-between">
-                <span>Monthly Service Fee</span>
-                <span>R0.00 (Covered by plan)</span>
-              </div>
-              <div class="flex justify-between font-semibold text-stone-900">
-                <span>Interest Rate (APR)</span>
-                <span>0.00% (Interest-Free)</span>
-              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- View 2: QUOTE -->
+      @if (view() === 'QUOTE') {
+        <div class="flex flex-col gap-6 max-w-xl">
+          <div class="border border-line rounded-sm p-6 flex flex-col gap-1">
+            <div class="flex items-center justify-between gap-4 border-b border-line pb-4">
+              <span class="${LABEL}">Approved credit limit</span>
+              <span class="font-heading text-4xl text-ink">R{{ approvedLimit() | number : '1.2-2' }}</span>
+            </div>
+            <div class="flex items-center justify-between gap-4 h-[52px] border-b border-line">
+              <span class="${LABEL}">Initiation fee (one-off)</span>
+              <span class="font-heading text-2xl text-ink">R0.00</span>
+            </div>
+            <div class="flex items-center justify-between gap-4 h-[52px] border-b border-line">
+              <span class="${LABEL}">Monthly service fee</span>
+              <span class="font-heading text-2xl text-ink">R0.00 <span class="font-caption text-xs text-ink-soft">covered by plan</span></span>
+            </div>
+            <div class="flex items-center justify-between gap-4 h-[52px]">
+              <span class="${LABEL}">Interest rate (APR)</span>
+              <span class="font-heading text-2xl text-ink">0.00% <span class="font-caption text-xs text-ink-soft">interest-free</span></span>
             </div>
           </div>
 
-          <div class="text-xs text-stone-400 leading-relaxed bg-stone-100/50 p-4 rounded-xl border border-stone-200">
-            * <strong>No Hidden Fees:</strong> Kalahari operates on a subscription-only model. You pay no interest on drawdowns as long as your monthly subscription is active and repayments occur on time.
+          <div class="bg-surface-tint border-l-[3px] border-accent p-4 flex flex-col gap-1.5 rounded-sm">
+            <span class="font-caption text-xs font-bold text-accent">No hidden fees</span>
+            <p class="font-body text-base leading-snug text-ink-soft">
+              Kalahari operates on a subscription-only model. You pay no interest on drawdowns as
+              long as your monthly subscription is active and repayments occur on time.
+            </p>
           </div>
 
-          <div class="flex gap-4 mt-2">
-            <button (click)="goToView('AFFORDABILITY')" class="flex-1 border border-stone-300 hover:bg-stone-50 text-stone-700 font-bold py-3.5 rounded-xl transition-all cursor-pointer text-sm">
-              Adjust Income
-            </button>
-            <button (click)="proceedToSign()" class="flex-1 bg-primary hover:bg-primary/95 text-white font-bold py-3.5 rounded-xl transition-all shadow-md cursor-pointer text-sm">
-              Accept & Sign
-            </button>
+          <div class="flex gap-4">
+            <button (click)="goToView('AFFORDABILITY')" class="${BUTTON_SECONDARY}">Adjust income</button>
+            <button (click)="proceedToSign()" class="${BUTTON}">Accept &amp; sign</button>
           </div>
         </div>
+      }
 
-        <!-- View 3: SIGNING -->
-        <div *ngIf="view() === 'SIGNING'" class="flex flex-col gap-4">
-          <div>
-            <h2 class="text-3xl font-extrabold tracking-tight">Sign Credit Agreement</h2>
-            <p class="text-sm text-stone-500 mt-1">Review the legal contract details and capture your digital signature.</p>
-          </div>
-
-          <!-- Document Box -->
-          <div class="border border-stone-200 bg-stone-50 rounded-2xl p-4 max-h-36 overflow-y-auto text-[10px] text-stone-500 leading-relaxed font-mono">
-            <strong>NATIONAL CREDIT AGREEMENT TERMS:</strong><br />
-            1. Parties: Kalahari (Credit Provider) & Student (Consumer).<br />
+      <!-- View 3: SIGNING -->
+      @if (view() === 'SIGNING') {
+        <div class="flex flex-col gap-5 max-w-xl">
+          <div class="border border-line bg-surface-tint rounded-sm p-5 max-h-40 overflow-y-auto font-caption text-xs text-ink-soft leading-relaxed">
+            <strong class="text-ink">NATIONAL CREDIT AGREEMENT TERMS</strong><br />
+            1. Parties: Kalahari (Credit Provider) &amp; Student (Consumer).<br />
             2. Facility: Revolving credit up to R{{ approvedLimit() | number }}.<br />
             3. Fees: Capped interest at 0.00% APR. Subscription fee applies monthly.<br />
             4. Defaults: Reports to major credit bureaus under NCA guidelines after grace periods.
           </div>
 
-          <!-- Signature Pad Canvas -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-stone-500">Draw Signature *</label>
-            <div class="border border-stone-300 rounded-2xl overflow-hidden bg-white relative">
-              <canvas #sigCanvas class="w-full h-32 cursor-crosshair touch-none" (mousedown)="startDrawing($event)" (mousemove)="draw($event)" (mouseup)="stopDrawing()" (touchstart)="startDrawingTouch($event)" (touchmove)="drawTouch($event)" (touchend)="stopDrawing()"></canvas>
-              <button (click)="clearSignature()" class="absolute bottom-3 right-3 text-[10px] bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded px-2.5 py-1 font-bold text-stone-600 transition-all cursor-pointer">
+          <div class="flex flex-col gap-2">
+            <label class="${LABEL}">Draw signature</label>
+            <div class="border border-line rounded-sm overflow-hidden bg-surface relative">
+              <canvas
+                #sigCanvas
+                class="w-full h-32 cursor-crosshair touch-none"
+                (mousedown)="startDrawing($event)"
+                (mousemove)="draw($event)"
+                (mouseup)="stopDrawing()"
+                (touchstart)="startDrawingTouch($event)"
+                (touchmove)="drawTouch($event)"
+                (touchend)="stopDrawing()"
+              ></canvas>
+              <button
+                (click)="clearSignature()"
+                class="absolute bottom-3 right-3 font-caption text-[10px] font-bold bg-surface-tint border border-line rounded-sm px-2.5 py-1 text-ink-soft cursor-pointer"
+              >
                 Clear
               </button>
             </div>
           </div>
 
-          <!-- OTP Input -->
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs font-bold text-stone-500">Signing OTP Code *</label>
-            <div class="flex gap-2">
-              <input type="text" maxlength="6" [(ngModel)]="signOtp" class="flex-1 border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="Enter 123456" />
-            </div>
+          <div class="flex flex-col gap-2">
+            <label class="${LABEL}">Signing OTP code</label>
+            <input type="text" maxlength="6" [(ngModel)]="signOtp" class="${FIELD} max-w-56" placeholder="Enter 123456" />
           </div>
 
-          <p *ngIf="error()" class="text-xs text-red-600 font-semibold mt-1">{{ error() }}</p>
+          @if (error()) {
+            <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+          }
 
-          <button (click)="submitSignature()" [disabled]="loading()" class="w-full bg-primary hover:bg-primary/95 text-white font-bold py-4 rounded-2xl transition-all shadow-md mt-2 flex items-center justify-center cursor-pointer">
-            {{ loading() ? 'Processing Signature...' : 'Confirm Signature & Open Facility' }}
+          <button (click)="submitSignature()" [disabled]="loading()" class="${BUTTON} w-fit">
+            {{ loading() ? 'Processing signature…' : 'Confirm signature & open facility' }}
           </button>
         </div>
+      }
 
-        <!-- View 4: SUCCESS -->
-        <div *ngIf="view() === 'SUCCESS'" class="flex flex-col gap-6 text-center py-6">
-          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-2 animate-bounce">✓</div>
-          <h2 class="text-3xl font-extrabold tracking-tight">Facility Activated!</h2>
-          <p class="text-stone-600 text-sm leading-relaxed max-w-xs mx-auto">
-            Your revolving credit facility is now fully active. You can draw down retailer vouchers directly from your dashboard.
+      <!-- View 4: SUCCESS -->
+      @if (view() === 'SUCCESS') {
+        <div class="bg-surface-tint rounded-sm p-7 flex flex-col gap-4 w-full max-w-xl">
+          <span class="inline-flex items-center gap-2 bg-surface rounded-sm px-2.5 py-1.5 w-fit">
+            <span class="h-2 w-2 rounded-full bg-accent"></span>
+            <span class="font-caption text-xs font-bold text-ink">Facility active</span>
+          </span>
+          <p class="font-body text-lg leading-relaxed text-ink-soft">
+            Your revolving credit facility is now fully active. You can draw down retailer vouchers
+            directly from your dashboard.
           </p>
-
-          <button (click)="goToDashboard()" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-bold py-4 rounded-2xl transition-all shadow-md mt-4 cursor-pointer">
-            Go to Dashboard
-          </button>
+          <button (click)="goToDashboard()" class="${BUTTON} w-fit">Go to dashboard</button>
         </div>
-
-      </div>
-    </div>
+      }
+    </app-wizard-shell>
   `,
 })
-export class CreditComponent implements AfterViewInit {
+export class CreditComponent {
   private http = inject(HttpClient);
   private router = inject(Router);
 
@@ -181,6 +197,13 @@ export class CreditComponent implements AfterViewInit {
     bureauObligations: null,
   };
 
+  stateNotes = [
+    'Loading: skeleton rows while the quote service responds',
+    'Error: explain failed verification without losing progress',
+    'Restriction: step-up before e-sign or large drawdown',
+    'Success: agreement ready for PDF review and signature',
+  ];
+
   constructor() {
     const storedId = sessionStorage.getItem('kredo_consumer_id');
     if (storedId) {
@@ -188,30 +211,32 @@ export class CreditComponent implements AfterViewInit {
     }
   }
 
-  ngAfterViewInit() {
-    // Canvas setup deferred until View 3 is rendered.
-    // We listen to view changes.
-  }
-
-  currentStepIndex = computed(() => {
+  wizardStep = computed(() => {
     switch (this.view()) {
-      case 'AFFORDABILITY': return 1;
-      case 'QUOTE': return 2;
-      case 'SIGNING':
-      case 'SUCCESS': return 3;
+      case 'AFFORDABILITY': return 4;
+      case 'QUOTE': return 5;
+      case 'SIGNING': return 6;
+      case 'SUCCESS': return 7;
     }
   });
 
-  currentStepTitle = computed(() => {
+  eyebrow = computed(() => {
     switch (this.view()) {
-      case 'AFFORDABILITY': return 'Credit Score Assessment';
-      case 'QUOTE': return 'Disclosure Pre-Agreement';
-      case 'SIGNING': return 'Contract Execution';
-      case 'SUCCESS': return 'Active';
+      case 'AFFORDABILITY': return 'Affordability assessment';
+      case 'QUOTE': return 'Pre-agreement quote';
+      case 'SIGNING': return 'Contract execution';
+      case 'SUCCESS': return 'Facility activated';
     }
   });
 
-  progressPercentage = computed(() => (this.currentStepIndex() / 3) * 100);
+  heading = computed(() => {
+    switch (this.view()) {
+      case 'AFFORDABILITY': return 'Confirm what is affordable before any offer is made.';
+      case 'QUOTE': return 'Review the approved limit and statutory fees.';
+      case 'SIGNING': return 'Sign your credit agreement.';
+      case 'SUCCESS': return 'Your facility is open.';
+    }
+  });
 
   goToView(target: CreditView) {
     this.view.set(target);
@@ -260,13 +285,14 @@ export class CreditComponent implements AfterViewInit {
     if (!this.sigCanvas) return;
     const canvas = this.sigCanvas.nativeElement;
     this.ctx = canvas.getContext('2d')!;
-    this.ctx.strokeStyle = '#2d2522';
-    this.ctx.lineWidth = 2.5;
-    this.ctx.lineCap = 'round';
-    
+
     // Set internal resolution matching DOM size
     canvas.width = canvas.offsetWidth;
     canvas.height = canvas.offsetHeight;
+
+    this.ctx.strokeStyle = '#2d2926';
+    this.ctx.lineWidth = 2.5;
+    this.ctx.lineCap = 'round';
   }
 
   clearSignature() {

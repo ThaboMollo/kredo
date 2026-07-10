@@ -22,7 +22,14 @@ export class ConsumerController {
     if (existing) {
       throw new BadRequestException('A profile with this email is already registered.');
     }
-    return this.consumerRepo.createConsumer(dto);
+    try {
+      return await this.consumerRepo.createConsumer(dto);
+    } catch (err) {
+      if (err instanceof Error && err.message.includes('duplicate key')) {
+        throw new BadRequestException('A profile with these identity details is already registered.');
+      }
+      throw err;
+    }
   }
 
   @Get(':id')

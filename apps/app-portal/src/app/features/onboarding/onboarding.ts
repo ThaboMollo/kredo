@@ -4,194 +4,221 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AttributionService } from '../../core/services/attribution.service';
+import { WizardShellComponent } from '../../shared/wizard-shell';
 import { environment } from '../../../environments/environment';
 
 type OnboardingStep = 'REGISTER' | 'OTP' | 'FICA' | 'STUDENT' | 'SUCCESS';
 
+const LABEL = 'font-caption text-[11px] font-bold uppercase tracking-[0.1em] text-ink-soft';
+const FIELD =
+  'bg-surface border border-line rounded-sm px-3.5 h-[54px] font-body text-lg text-ink focus:outline-none focus:border-accent w-full';
+const BUTTON =
+  'bg-accent hover:opacity-90 text-cream font-caption text-sm font-semibold px-6 py-3.5 rounded-sm transition-opacity cursor-pointer disabled:opacity-50';
+
 @Component({
   selector: 'app-onboarding',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, WizardShellComponent],
   template: `
-    <div class="min-h-screen bg-stone-50 text-stone-900 flex items-center justify-center p-6 antialiased">
-      <!-- Onboarding Container -->
-      <div class="bg-white/80 backdrop-blur-xl border border-stone-200 shadow-2xl rounded-3xl w-full max-w-xl p-8 md:p-10 flex flex-col gap-6 relative overflow-hidden">
-        
-        <!-- Background decorative blur -->
-        <div class="absolute -top-24 -right-24 h-48 w-48 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <!-- Step Indicator -->
-        <div class="flex items-center justify-between text-xs font-semibold text-stone-400 uppercase tracking-wider">
-          <span>{{ currentStepTitle() }}</span>
-          <span>Step {{ currentStepIndex() }} of 4</span>
-        </div>
-        <div class="w-full bg-stone-100 h-1.5 rounded-full overflow-hidden">
-          <div class="bg-primary h-full transition-all duration-300" [style.width.%]="progressPercentage()"></div>
-        </div>
-
-        <!-- Step 1: REGISTER -->
-        <div *ngIf="step() === 'REGISTER'" class="flex flex-col gap-4">
-          <div>
-            <h2 class="text-3xl font-extrabold tracking-tight">Create your Kredo Profile</h2>
-            <p class="text-sm text-stone-500 mt-1">Get started on your credit-building journey.</p>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div class="flex flex-col gap-1">
-              <label class="text-xs font-bold text-stone-500">First Name</label>
-              <input type="text" [(ngModel)]="form.firstName" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="Thabo" />
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-xs font-bold text-stone-500">Last Name</label>
-              <input type="text" [(ngModel)]="form.lastName" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="Mollo" />
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-stone-500">Email Address</label>
-            <input type="email" [(ngModel)]="form.email" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="student@university.ac.za" />
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-stone-500">Mobile Number</label>
-            <input type="tel" [(ngModel)]="form.mobile" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="082 123 4567" />
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <label class="text-xs font-bold text-stone-500">SA ID Number</label>
-            <input type="text" [(ngModel)]="form.idNumber" class="border border-stone-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="0101015000081" />
-          </div>
-
-          <!-- POPIA checks -->
-          <div class="flex flex-col gap-3 mt-2 bg-stone-50 border border-stone-200/60 p-4 rounded-2xl">
-            <label class="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" [(ngModel)]="form.processingConsent" class="mt-1 h-4 w-4 rounded border-stone-300 text-primary focus:ring-primary/40" />
-              <span class="text-xs text-stone-600 leading-normal">I consent to Kredo processing my details for credit matching. (Required) *</span>
-            </label>
-            <label class="flex items-start gap-3 cursor-pointer">
-              <input type="checkbox" [(ngModel)]="form.bureauConsent" class="mt-1 h-4 w-4 rounded border-stone-300 text-primary focus:ring-primary/40" />
-              <span class="text-xs text-stone-600 leading-normal">I authorize Kredo to perform a credit check and report payment behaviors to credit bureaus. (Required) *</span>
-            </label>
-          </div>
-
-          <p *ngIf="error()" class="text-xs text-red-600 font-semibold mt-1">{{ error() }}</p>
-
-          <button (click)="submitRegister()" [disabled]="loading()" class="w-full bg-primary hover:bg-primary/95 text-white font-bold py-4 rounded-2xl transition-all shadow-md mt-2 flex items-center justify-center cursor-pointer">
-            {{ loading() ? 'Saving...' : 'Continue to OTP Verification' }}
-          </button>
-        </div>
-
-        <!-- Step 2: OTP -->
-        <div *ngIf="step() === 'OTP'" class="flex flex-col gap-5 text-center">
-          <div class="flex flex-col gap-2">
-            <h2 class="text-3xl font-extrabold tracking-tight">Enter OTP</h2>
-            <p class="text-sm text-stone-500">We sent a 6-digit verification code to {{ form.email }}</p>
-          </div>
-
-          <div class="flex justify-center gap-2 my-2">
-            <input type="text" maxlength="6" [(ngModel)]="otpCode" class="border border-stone-300 rounded-xl p-3 text-center text-xl font-bold tracking-[0.5em] w-48 focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="123456" />
-          </div>
-
-          <p class="text-xs text-stone-400">For mock testing, enter <strong class="text-primary">123456</strong></p>
-          <p *ngIf="error()" class="text-xs text-red-600 font-semibold">{{ error() }}</p>
-
-          <button (click)="submitOtp()" [disabled]="loading()" class="w-full bg-primary hover:bg-primary/95 text-white font-bold py-4 rounded-2xl transition-all shadow-md cursor-pointer">
-            Verify Code
-          </button>
-        </div>
-
-        <!-- Step 3: FICA -->
-        <div *ngIf="step() === 'FICA'" class="flex flex-col gap-5">
-          <div>
-            <h2 class="text-3xl font-extrabold tracking-tight">Identity (FICA) Verification</h2>
-            <p class="text-sm text-stone-500 mt-1">Place your face in the oval boundary below to complete liveness capture.</p>
-          </div>
-
-          <!-- Camera Stream Frame -->
-          <div class="relative w-full aspect-video bg-stone-900 rounded-2xl overflow-hidden border-2 border-stone-200 shadow-inner flex items-center justify-center">
-            <video #videoElement autoplay playsinline class="w-full h-full object-cover" [class.hidden]="cameraDenied()"></video>
-            
-            <!-- Face boundary overlay -->
-            <div *ngIf="!cameraDenied() && cameraActive()" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div class="w-48 h-60 rounded-[50%] border-4 border-dashed border-white/60 shadow-[0_0_0_9999px_rgba(0,0,0,0.5)]"></div>
-            </div>
-
-            <!-- Fallback Document Upload -->
-            <div *ngIf="cameraDenied()" class="p-6 text-center text-stone-400 flex flex-col items-center gap-4">
-              <span class="text-4xl">📷</span>
-              <p class="text-sm">Camera access was denied. Please upload a clear photo of your SA ID Document and a Selfie.</p>
-              <input type="file" (change)="handleFicaDocUpload($event)" class="text-xs text-stone-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" />
-            </div>
-
-            <!-- Loading overlay during liveness check -->
-            <div *ngIf="verifyingLiveness()" class="absolute inset-0 bg-stone-900/90 backdrop-blur-sm flex flex-col items-center justify-center text-white gap-4">
-              <div class="h-10 w-10 border-4 border-t-primary animate-spin rounded-full"></div>
-              <p class="text-sm font-semibold">Running liveness matching algorithms...</p>
-            </div>
-          </div>
-
-          <p *ngIf="error()" class="text-xs text-red-600 font-semibold text-center">{{ error() }}</p>
-
-          <div class="flex gap-4">
-            <button *ngIf="!cameraDenied() && !cameraActive()" (click)="initCamera()" class="flex-1 bg-stone-850 hover:bg-stone-900 text-white font-bold py-3.5 rounded-2xl transition-all cursor-pointer">
-              Enable Web Camera
-            </button>
-            <button *ngIf="cameraActive() && !verifyingLiveness()" (click)="captureSelfie()" class="flex-1 bg-primary hover:bg-primary/95 text-white font-bold py-3.5 rounded-2xl transition-all cursor-pointer">
-              Capture & Verify
-            </button>
-            <button *ngIf="cameraDenied() && mockFileUploaded" (click)="submitManualKyc()" class="flex-1 bg-primary hover:bg-primary/95 text-white font-bold py-3.5 rounded-2xl transition-all cursor-pointer">
-              Submit KYC Documents
-            </button>
-          </div>
-        </div>
-
-        <!-- Step 4: STUDENT -->
-        <div *ngIf="step() === 'STUDENT'" class="flex flex-col gap-5">
-          <div>
-            <h2 class="text-3xl font-extrabold tracking-tight">Academic Enrollment</h2>
-            <p class="text-sm text-stone-500 mt-1">We require proof of student registration to unlock credit facility offers.</p>
-          </div>
-
-          <div class="flex flex-col gap-4">
-            <!-- Academic Email -->
-            <div class="flex flex-col gap-1 bg-stone-50 border border-stone-200 p-4 rounded-2xl">
-              <span class="text-xs font-bold text-stone-500">Method A: Instant Email Match</span>
-              <p class="text-xs text-stone-400 mb-2">Input your official university address (e.g. .ac.za) to auto-verify.</p>
-              <div class="flex gap-2">
-                <input type="email" [(ngModel)]="studentEmail" class="flex-1 border border-stone-300 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-primary/20 focus:outline-none" placeholder="you@university.ac.za" />
-                <button (click)="submitStudentEmail()" class="bg-stone-850 hover:bg-stone-900 text-white text-xs font-bold px-4 rounded-xl cursor-pointer">Verify</button>
+    <app-wizard-shell [active]="wizardStep()" [eyebrow]="eyebrow()" [heading]="heading()">
+      <!-- Step 1: REGISTER -->
+      @if (step() === 'REGISTER') {
+        <div class="flex flex-col lg:flex-row gap-7 items-start">
+          <div class="bg-surface-tint rounded-sm p-7 flex flex-col gap-4 w-full max-w-2xl">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-2">
+                <label class="${LABEL}">First name</label>
+                <input type="text" [(ngModel)]="form.firstName" class="${FIELD}" placeholder="Lerato" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="${LABEL}">Last name</label>
+                <input type="text" [(ngModel)]="form.lastName" class="${FIELD}" placeholder="Mokoena" />
               </div>
             </div>
 
-            <!-- Manual File Fallback -->
-            <div class="flex flex-col gap-1 bg-stone-50 border border-stone-200 p-4 rounded-2xl">
-              <span class="text-xs font-bold text-stone-500">Method B: Manual Document Review</span>
-              <p class="text-xs text-stone-400 mb-3">Upload your student card or registration letter if email verification is not available.</p>
-              <input type="file" (change)="handleStudentCardUpload($event)" class="text-xs text-stone-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" />
-              <button *ngIf="studentCardFile" (click)="submitStudentCard()" class="bg-primary hover:bg-primary/95 text-white text-xs font-bold py-2.5 rounded-xl mt-3 cursor-pointer">
-                Upload Document
-              </button>
+            <div class="flex flex-col gap-2">
+              <label class="${LABEL}">Email address</label>
+              <input type="email" [(ngModel)]="form.email" class="${FIELD}" placeholder="student@university.ac.za" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="${LABEL}">Mobile number</label>
+              <input type="tel" [(ngModel)]="form.mobile" class="${FIELD}" placeholder="082 123 4567" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="${LABEL}">SA ID number</label>
+              <input type="text" [(ngModel)]="form.idNumber" class="${FIELD}" placeholder="0101015000081" />
+            </div>
+
+            <div class="bg-surface border-l-[3px] border-accent p-4 flex flex-col gap-2.5">
+              <span class="font-caption text-xs font-bold text-accent">POPIA consent — no consent, no processing</span>
+              <label class="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" [(ngModel)]="form.processingConsent" class="mt-1 h-4 w-4 accent-[#7d6b3d]" />
+                <span class="font-body text-base text-ink-soft leading-snug">
+                  I consent to Kredo processing my details for credit matching. (Required)
+                </span>
+              </label>
+              <label class="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" [(ngModel)]="form.bureauConsent" class="mt-1 h-4 w-4 accent-[#7d6b3d]" />
+                <span class="font-body text-base text-ink-soft leading-snug">
+                  I authorise Kredo to perform a credit check and report payment behaviour to credit bureaus. (Required)
+                </span>
+              </label>
+            </div>
+
+            @if (error()) {
+              <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+            }
+
+            <button (click)="submitRegister()" [disabled]="loading()" class="${BUTTON} w-fit">
+              {{ loading() ? 'Saving…' : 'Continue to verification' }}
+            </button>
+          </div>
+
+          <div class="border border-line rounded-sm p-5 flex flex-col gap-3 w-full max-w-sm">
+            <span class="font-heading text-2xl text-ink">Why we ask</span>
+            <p class="font-body text-base leading-relaxed text-ink-soft">
+              Consent is recorded with a timestamped audit trail before any processing happens.
+              You can withdraw consent at any time from your profile.
+            </p>
+          </div>
+        </div>
+      }
+
+      <!-- Step 2: OTP -->
+      @if (step() === 'OTP') {
+        <div class="bg-surface-tint rounded-sm p-7 flex flex-col gap-4 w-full max-w-xl">
+          <p class="font-body text-lg text-ink-soft">
+            We sent a 6-digit verification code to <strong class="text-ink">{{ form.email }}</strong>.
+          </p>
+          <div class="flex flex-col gap-2">
+            <label class="${LABEL}">One-time PIN</label>
+            <input
+              type="text"
+              maxlength="6"
+              [(ngModel)]="otpCode"
+              class="${FIELD} tracking-[0.5em] text-center max-w-56"
+              placeholder="123456"
+            />
+          </div>
+          <p class="font-caption text-xs text-ink-soft">For sandbox testing, enter <strong class="text-accent">123456</strong></p>
+          @if (error()) {
+            <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+          }
+          <button (click)="submitOtp()" [disabled]="loading()" class="${BUTTON} w-fit">Verify code</button>
+        </div>
+      }
+
+      <!-- Step 3: FICA -->
+      @if (step() === 'FICA') {
+        <div class="flex flex-col gap-5 w-full max-w-2xl">
+          <p class="font-body text-lg text-ink-soft max-w-xl">
+            Place your face in the oval boundary below to complete the liveness capture.
+          </p>
+
+          <div class="relative w-full aspect-video bg-ink rounded-sm overflow-hidden border border-line flex items-center justify-center">
+            <video #videoElement autoplay playsinline class="w-full h-full object-cover" [class.hidden]="cameraDenied()"></video>
+
+            @if (!cameraDenied() && cameraActive()) {
+              <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="w-48 h-60 rounded-[50%] border-2 border-dashed border-cream/70 shadow-[0_0_0_9999px_rgba(45,41,38,0.55)]"></div>
+              </div>
+            }
+
+            @if (cameraDenied()) {
+              <div class="p-6 text-center text-cream/70 flex flex-col items-center gap-4">
+                <p class="font-body text-base max-w-sm">
+                  Camera access was denied. Upload a clear photo of your SA ID document and a selfie instead.
+                </p>
+                <input
+                  type="file"
+                  (change)="handleFicaDocUpload($event)"
+                  class="font-caption text-xs text-cream/70 file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:font-caption file:text-xs file:font-semibold file:bg-accent file:text-cream cursor-pointer"
+                />
+              </div>
+            }
+
+            @if (verifyingLiveness()) {
+              <div class="absolute inset-0 bg-ink/90 flex flex-col items-center justify-center text-cream gap-4">
+                <div class="h-10 w-10 border-4 border-cream/20 border-t-accent animate-spin rounded-full"></div>
+                <p class="font-caption text-sm font-semibold">Running liveness matching…</p>
+              </div>
+            }
+          </div>
+
+          @if (error()) {
+            <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+          }
+
+          <div class="flex gap-4">
+            @if (!cameraDenied() && !cameraActive()) {
+              <button (click)="initCamera()" class="${BUTTON}">Enable web camera</button>
+            }
+            @if (cameraActive() && !verifyingLiveness()) {
+              <button (click)="captureSelfie()" class="${BUTTON}">Capture &amp; verify</button>
+            }
+            @if (cameraDenied() && mockFileUploaded) {
+              <button (click)="submitManualKyc()" class="${BUTTON}">Submit KYC documents</button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Step 4: STUDENT -->
+      @if (step() === 'STUDENT') {
+        <div class="flex flex-col gap-5 w-full max-w-2xl">
+          <p class="font-body text-lg text-ink-soft max-w-xl">
+            We require proof of student registration before a credit facility can be offered.
+          </p>
+
+          <div class="bg-surface-tint rounded-sm p-6 flex flex-col gap-3">
+            <span class="${LABEL}">Method A — instant email match</span>
+            <p class="font-body text-base text-ink-soft">
+              Enter your official university address (ending in .ac.za) to auto-verify.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <input type="email" [(ngModel)]="studentEmail" class="${FIELD} flex-1" placeholder="you@university.ac.za" />
+              <button (click)="submitStudentEmail()" class="${BUTTON}">Verify</button>
             </div>
           </div>
 
-          <p *ngIf="error()" class="text-xs text-red-600 font-semibold text-center">{{ error() }}</p>
-        </div>
+          <div class="border border-line rounded-sm p-6 flex flex-col gap-3">
+            <span class="${LABEL}">Method B — manual document review</span>
+            <p class="font-body text-base text-ink-soft">
+              Upload your student card or registration letter if email verification is not available.
+            </p>
+            <input
+              type="file"
+              (change)="handleStudentCardUpload($event)"
+              class="font-caption text-xs text-ink-soft file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:font-caption file:text-xs file:font-semibold file:bg-surface-tint file:text-accent cursor-pointer"
+            />
+            @if (studentCardFile) {
+              <button (click)="submitStudentCard()" class="${BUTTON} w-fit">Upload document</button>
+            }
+          </div>
 
-        <!-- Step 5: SUCCESS -->
-        <div *ngIf="step() === 'SUCCESS'" class="flex flex-col gap-5 text-center py-6">
-          <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-2 animate-bounce">✓</div>
-          <h2 class="text-3xl font-extrabold tracking-tight">Onboarding Complete!</h2>
-          <p class="text-stone-600 text-sm leading-relaxed max-w-xs mx-auto">
-            Your profile has been created, identity verified, and academic enrollment confirmed. We're ready to proceed to subscription setup.
+          @if (error()) {
+            <p class="font-caption text-xs font-bold text-red-700">{{ error() }}</p>
+          }
+        </div>
+      }
+
+      <!-- Step 5: SUCCESS -->
+      @if (step() === 'SUCCESS') {
+        <div class="bg-surface-tint rounded-sm p-7 flex flex-col gap-4 w-full max-w-xl">
+          <span class="inline-flex items-center gap-2 bg-surface rounded-sm px-2.5 py-1.5 w-fit">
+            <span class="h-2 w-2 rounded-full bg-accent"></span>
+            <span class="font-caption text-xs font-bold text-ink">KYC verified</span>
+          </span>
+          <p class="font-body text-lg leading-relaxed text-ink-soft">
+            Your profile has been created, identity verified, and academic enrollment confirmed.
+            Next, choose a subscription plan and set up your DebiCheck mandate.
           </p>
-
-          <button (click)="finishOnboarding()" class="w-full bg-primary hover:bg-primary/95 text-white font-bold py-4 rounded-2xl transition-all shadow-md mt-4 cursor-pointer">
-            Select Subscription Plan
-          </button>
+          <button (click)="finishOnboarding()" class="${BUTTON} w-fit">Select subscription plan</button>
         </div>
-
-      </div>
-    </div>
+      }
+    </app-wizard-shell>
   `,
 })
 export class OnboardingComponent {
@@ -222,7 +249,7 @@ export class OnboardingComponent {
   studentEmail = '';
   studentCardFile: File | null = null;
   mockFileUploaded = false;
-  
+
   // Camera liveness state
   cameraActive = signal(false);
   cameraDenied = signal(false);
@@ -241,27 +268,27 @@ export class OnboardingComponent {
     });
   }
 
-  currentStepIndex = computed(() => {
-    switch (this.step()) {
-      case 'REGISTER': return 1;
-      case 'OTP': return 2;
-      case 'FICA': return 3;
-      case 'STUDENT':
-      case 'SUCCESS': return 4;
-    }
-  });
+  wizardStep = computed(() => (this.step() === 'REGISTER' || this.step() === 'OTP' ? 1 : 2));
 
-  currentStepTitle = computed(() => {
+  eyebrow = computed(() => {
     switch (this.step()) {
-      case 'REGISTER': return 'Profile Creation';
+      case 'REGISTER': return 'POPIA consent';
       case 'OTP': return 'Verification';
-      case 'FICA': return 'FICA Compliance';
-      case 'STUDENT': return 'Enrollment Verification';
-      case 'SUCCESS': return 'All Set';
+      case 'FICA': return 'KYC / FICA';
+      case 'STUDENT': return 'Student status';
+      case 'SUCCESS': return 'Verified';
     }
   });
 
-  progressPercentage = computed(() => (this.currentStepIndex() / 4) * 100);
+  heading = computed(() => {
+    switch (this.step()) {
+      case 'REGISTER': return 'Create your Kredo profile.';
+      case 'OTP': return 'Confirm your contact details.';
+      case 'FICA': return 'Verify your identity.';
+      case 'STUDENT': return 'Confirm your enrollment.';
+      case 'SUCCESS': return 'Identity confirmed.';
+    }
+  });
 
   // Actions
   async submitRegister() {

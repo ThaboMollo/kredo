@@ -1,125 +1,162 @@
 import React from 'react';
+import Image from 'next/image';
 import PortalCTA from '@/components/PortalCTA';
 import WaitlistForm from '@/components/WaitlistForm';
+import SiteHeader from '@/components/SiteHeader';
+import SiteFooter from '@/components/SiteFooter';
+
+const trustLabels = [
+  'POPIA consent first',
+  'Credit-bureau reporting',
+  'Transparent fees',
+  'Campus partner ready',
+];
+
+const processSteps = [
+  {
+    number: '01',
+    title: 'Subscribe',
+    copy: 'Choose a plan and set up DebiCheck before credit is offered.',
+  },
+  {
+    number: '02',
+    title: 'Draw down',
+    copy: 'Use closed-loop vouchers only within the approved facility.',
+  },
+  {
+    number: '03',
+    title: 'Build history',
+    copy: 'Repay on time and have behaviour reported to bureaus.',
+  },
+];
 
 export default function Home() {
   return (
-    <div className="flex-1 flex flex-col font-sans selection:bg-primary/20 selection:text-primary">
-      {/* Header */}
-      <header className="sticky top-0 bg-[#faf8f5]/85 backdrop-blur-md border-b border-stone-200/60 z-40 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold tracking-tight text-stone-900">
-              Kalahari<span className="text-primary">.</span>
-            </span>
-          </div>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-stone-600">
-            <a href="/how-it-works" className="hover:text-stone-900 transition-colors">How it works</a>
-            <a href="/pricing" className="hover:text-stone-900 transition-colors">Pricing</a>
-            <a href="/trust" className="hover:text-stone-900 transition-colors">Trust & Compliance</a>
-          </nav>
-          <div className="flex items-center gap-4">
-            <PortalCTA className="text-sm font-semibold text-stone-700 hover:text-stone-900 px-4 py-2">
-              Sign In
-            </PortalCTA>
-            <PortalCTA className="bg-primary hover:bg-primary/95 text-white text-sm font-semibold px-4 py-2 rounded-xl shadow-sm transition-all">
-              Apply Now
-            </PortalCTA>
-          </div>
-        </div>
-      </header>
+    <div className="flex-1 flex flex-col selection:bg-accent/20 selection:text-accent">
+      <SiteHeader />
 
-      {/* Hero Section */}
-      <section className="px-6 py-16 md:py-24 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        <div className="lg:col-span-7 flex flex-col gap-6">
-          <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold w-fit uppercase tracking-wider">
-            Student Credit Redefined
+      {/* Hero */}
+      <section className="relative overflow-hidden bg-ink">
+        <Image
+          src="https://images.unsplash.com/photo-1698422454462-5ec4e767cd19?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920"
+          alt="Students working together on campus"
+          fill
+          priority
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-ink/60" />
+        <div className="relative max-w-7xl mx-auto px-6 py-24 md:py-36 flex flex-col gap-6">
+          <span className="font-caption text-xs md:text-sm font-bold uppercase tracking-[0.14em] text-cream/80">
+            Student credit without the loan-shark feel
           </span>
-          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-stone-900 leading-tight">
-            Build your credit history <span className="text-primary underline decoration-wavy decoration-accent/40">before</span> you graduate.
+          <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl leading-[0.95] text-cream max-w-4xl">
+            Build real credit before graduation.
           </h1>
-          <p className="text-lg text-stone-600 max-w-xl leading-relaxed">
-            South African students are locked out of the financial system or trapped by predatory loan sharks. Kalahari offers a simple subscription-based retail facility that builds your official bureau history safely and transparently.
+          <p className="font-body text-xl md:text-2xl leading-snug text-cream/90 max-w-xl">
+            Kalahari helps students subscribe, qualify responsibly, draw down closed-loop vouchers,
+            repay on time, and create a formal credit history the right way.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mt-2">
-            <PortalCTA className="bg-primary hover:bg-primary/95 text-white font-bold px-8 py-4 rounded-xl text-center shadow-lg hover:shadow-xl transition-all">
-              Get Started
+            <PortalCTA className="bg-accent hover:opacity-90 text-cream font-caption text-sm font-semibold px-6 py-4 rounded-sm text-center transition-opacity">
+              Start in Kredo
             </PortalCTA>
-            <a href="#learn-more" className="border border-stone-300 hover:bg-stone-50 text-stone-800 font-bold px-8 py-4 rounded-xl text-center transition-all">
-              See How It Works
+            <a
+              href="/how-it-works"
+              className="bg-cream/95 hover:bg-cream text-ink font-caption text-sm font-semibold px-6 py-4 rounded-sm text-center transition-colors"
+            >
+              How it works
             </a>
           </div>
         </div>
-        <div className="lg:col-span-5 flex justify-center">
-          <WaitlistForm />
+      </section>
+
+      {/* Trust label row */}
+      <section className="border-b border-line">
+        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-wrap items-center justify-center gap-x-9 gap-y-3">
+          {trustLabels.map((label) => (
+            <span
+              key={label}
+              className="font-caption text-xs font-bold uppercase tracking-[0.14em] text-ink-soft"
+            >
+              {label}
+            </span>
+          ))}
         </div>
       </section>
 
-      {/* Steps Section */}
-      <section id="learn-more" className="bg-stone-100/50 py-20 px-6 border-t border-b border-stone-200/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-16 flex flex-col gap-3">
-            <h2 className="text-3xl font-extrabold text-stone-900 tracking-tight">How Kalahari works in 3 steps</h2>
-            <p className="text-stone-600">No complicated forms, no high-interest loan shark traps. Just structured progress.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white border border-stone-200/60 rounded-3xl p-8 flex flex-col gap-4 shadow-sm hover:shadow-md transition-all">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-xl">1</div>
-              <h3 className="text-xl font-bold text-stone-900">Choose a Plan</h3>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                Verify your student status and select a pricing plan. Setup your DebiCheck automated debit order mandate with your SA bank account.
-              </p>
-            </div>
-
-            <div className="bg-white border border-stone-200/60 rounded-3xl p-8 flex flex-col gap-4 shadow-sm hover:shadow-md transition-all">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-xl">2</div>
-              <h3 className="text-xl font-bold text-stone-900">Voucher Drawdowns</h3>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                Access a credit facility for closed-loop vouchers at partner retailers. Purchase essential academic books, food, or electronics within your approved limits.
-              </p>
-            </div>
-
-            <div className="bg-white border border-stone-200/60 rounded-3xl p-8 flex flex-col gap-4 shadow-sm hover:shadow-md transition-all">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold text-xl">3</div>
-              <h3 className="text-xl font-bold text-stone-900">Bureaus Reporting</h3>
-              <p className="text-stone-600 text-sm leading-relaxed">
-                Repay your balances on time. We compile and report your positive repayment behaviors to South Africa’s leading credit bureaus, growing your credit profile.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust Banner */}
-      <section className="py-16 px-6 max-w-7xl mx-auto text-center flex flex-col gap-6">
-        <h3 className="text-2xl font-bold text-stone-900">Your financial safety is our legal mandate.</h3>
-        <p className="text-stone-600 max-w-2xl mx-auto text-sm leading-relaxed">
-          Kalahari conforms strictly to the National Credit Act (NCA) guidelines. We run strict affordability checks and audit all consents under POPIA rules. All personal identifiers are encrypted at rest.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-8 mt-4 text-xs font-semibold text-stone-500 uppercase tracking-widest">
-          <span>NCR Registered Provider</span>
-          <span className="hidden sm:inline">•</span>
-          <span>POPIA Compliant</span>
-          <span className="hidden sm:inline">•</span>
-          <span>DebiCheck Certified</span>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-stone-900 text-stone-400 py-12 px-6 border-t border-stone-850 mt-auto">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <span className="text-lg font-bold text-white">
-            Kalahari<span className="text-primary">.</span>
+      {/* How it works */}
+      <section id="learn-more" className="max-w-7xl mx-auto px-6 py-20 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+        <div className="lg:col-span-5 flex flex-col gap-5">
+          <span className="font-caption text-xs font-bold uppercase tracking-[0.14em] text-accent">
+            How it works
           </span>
-          <div className="flex flex-wrap justify-center gap-6 text-xs font-semibold">
-            <a href="/legal" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="/legal" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="/trust" className="hover:text-white transition-colors">NCR Information</a>
-          </div>
-          <p className="text-xs text-stone-500">© 2026 Kalahari. All rights reserved.</p>
+          <h2 className="font-heading text-4xl md:text-5xl leading-[1.02] text-ink">
+            A subscription path into formal credit.
+          </h2>
+          <p className="font-body text-xl leading-relaxed text-ink-soft">
+            Students activate a plan, complete consent and verification, then use approved vouchers
+            at partner retailers. Repayments and behaviour are recorded for bureau reporting, with
+            plain-language compliance at every step.
+          </p>
         </div>
-      </footer>
+        <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-3 gap-5">
+          {processSteps.map((step) => (
+            <div key={step.number} className="border border-line rounded-sm p-5 flex flex-col gap-2.5">
+              <span className="font-caption text-xs font-bold text-accent">{step.number}</span>
+              <h3 className="font-heading text-3xl leading-[1.05] text-ink">{step.title}</h3>
+              <p className="font-body text-lg leading-snug text-ink-soft">{step.copy}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Trust & compliance */}
+      <section className="max-w-7xl mx-auto px-6 pb-20 md:pb-24 grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+        <div className="lg:col-span-5 relative aspect-[13/9] w-full">
+          <Image
+            src="https://images.unsplash.com/photo-1574420773965-b34c687f35b1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+            alt="Compliance documents on a workspace"
+            fill
+            className="object-cover"
+          />
+        </div>
+        <div className="lg:col-span-7 flex flex-col gap-5">
+          <span className="font-caption text-xs font-bold uppercase tracking-[0.14em] text-accent">
+            Trust &amp; compliance
+          </span>
+          <h2 className="font-heading text-4xl md:text-5xl leading-[1.02] text-ink">
+            Built for a credit-anxious audience.
+          </h2>
+          <p className="font-body text-xl leading-relaxed text-ink-soft">
+            The public site explains NCR registration, POPIA handling, fee transparency, complaints
+            paths, and the difference between reported behaviour and guaranteed score changes. No
+            login lives here; qualified intent moves to Kredo.
+          </p>
+        </div>
+      </section>
+
+      {/* Lead capture slab */}
+      <section className="bg-ink">
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-14 items-center">
+          <div className="lg:col-span-7 flex flex-col gap-4">
+            <span className="font-caption text-xs font-bold uppercase tracking-[0.14em] text-cream/70">
+              Waitlist handoff
+            </span>
+            <h2 className="font-heading text-4xl md:text-5xl leading-[1.05] text-cream">
+              Capture demand now. Complete applications in Kredo.
+            </h2>
+            <p className="font-body text-xl leading-relaxed text-cream/85">
+              The form records granular POPIA consent and referral attribution, then sends
+              applicants to kredo.kalahari.co.za/apply with campaign data intact.
+            </p>
+          </div>
+          <div className="lg:col-span-5">
+            <WaitlistForm />
+          </div>
+        </div>
+      </section>
+
+      <SiteFooter />
     </div>
   );
 }

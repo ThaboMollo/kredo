@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Headers, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Controller, Post, Get, Body, Query, Headers, BadRequestException, NotFoundException } from '@nestjs/common';
 import { SupabaseService } from '../../database/supabase.service';
 import { LedgerRepository } from '../../database/ledger.repository';
 import { LedgerTransaction, EntryDirection, AccountType } from '../../../domain/ledger/ledger-transaction';
@@ -11,6 +11,52 @@ export class CreditController {
     private readonly supabase: SupabaseService,
     private readonly ledgerRepo: LedgerRepository,
   ) {}
+
+  @Get('facility')
+  @ApiOperation({ summary: 'Fetch the credit facility state for a consumer' })
+  async getFacility(@Query('consumerId') consumerId: string) {
+    const { data: facility } = await this.supabase.client
+      .from('CreditFacility')
+      .select('*')
+      .eq('consumerId', consumerId)
+      .maybeSingle();
+
+    if (!facility) {
+      return { status: 'NONE' };
+    }
+
+    return {
+      id: facility.id,
+      status: facility.status,
+      totalLimit: Number(facility.totalLimit),
+      utilisedLimit: Number(facility.utilisedLimit),
+      available: Number(facility.totalLimit) - Number(facility.utilisedLimit),
+    };
+  }
+
+  @Get('vouchers')
+  @ApiOperation({ summary: 'List vouchers issued to a consumer' })
+  async listVouchers(@Query('consumerId') consumerId: string) {
+    const { data: vouchers, error } = await this.supabase.client
+      .from('Voucher')
+      .select('*')
+      .eq('consumerId', consumerId)
+      .order('createdAt', { ascending: false });
+
+    if (error) {
+      throw new BadRequestException(`Failed to list vouchers: ${error.message}`);
+    }
+
+    return (vouchers || []).map((v) => ({
+      id: v.id,
+      merchantName: v.merchantName,
+      amount: Number(v.amount),
+      code: v.code,
+      qrValue: v.qrValue,
+      status: v.status,
+      expiryDate: v.expiryDate,
+    }));
+  }
 
   @Post('affordability')
   @ApiOperation({ summary: 'Calculate disposable income and approve a revolving credit limit' })

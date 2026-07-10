@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { PortalShellComponent } from '../../shared/portal-shell';
 import { environment } from '../../../environments/environment';
 
 interface Consent {
@@ -13,116 +13,77 @@ interface Consent {
   version: string;
 }
 
+const BUTTON =
+  'bg-accent hover:opacity-90 text-cream font-caption text-sm font-semibold px-6 py-3.5 rounded-sm transition-opacity cursor-pointer disabled:opacity-50';
+
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PortalShellComponent],
   template: `
-    <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased md:flex-row">
-      <!-- Sidebar Navigation -->
-      <aside class="w-full md:w-64 bg-stone-900 text-stone-400 p-6 flex flex-col justify-between border-r border-stone-800">
-        <div class="flex flex-col gap-8">
-          <div class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
-            <span>Kredo</span><span class="text-primary font-bold text-2xl">.</span>
-          </div>
+    <app-portal-shell>
+      <div class="flex flex-col gap-2">
+        <span class="font-caption text-xs font-bold uppercase tracking-[0.14em] text-accent">Your data, your rules</span>
+        <h1 class="font-heading text-4xl md:text-5xl leading-[1.05] text-ink">Profile &amp; consents</h1>
+      </div>
 
-          <nav class="flex flex-col gap-2 font-medium text-sm">
-            <a (click)="goTo('/dashboard')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>📊</span> Dashboard
-            </a>
-            <a (click)="goTo('/wallet')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>💳</span> Voucher Wallet
-            </a>
-            <a (click)="goTo('/repayments')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>💸</span> Repayments
-            </a>
-            <a (click)="goTo('/progress')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>📈</span> Credit Progress
-            </a>
-          </nav>
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Identity card -->
+        <div class="lg:col-span-5 bg-surface-tint rounded-sm p-7 flex flex-col gap-4">
+          <h2 class="font-heading text-3xl text-ink">{{ consumerName() }}</h2>
+          <span class="inline-flex items-center gap-2 bg-surface rounded-sm px-2.5 py-1.5 w-fit">
+            <span class="h-2 w-2 rounded-full bg-accent"></span>
+            <span class="font-caption text-xs font-bold text-ink">Student member</span>
+          </span>
+          <p class="font-body text-base leading-relaxed text-ink-soft">
+            Full identity details are masked by default. Step-up authentication is required before
+            viewing your full ID number or changing bank details.
+          </p>
         </div>
 
-        <div class="pt-6 border-t border-stone-800 flex flex-col gap-4">
-          <div class="flex items-center gap-3">
-            <div class="h-9 w-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs uppercase">
-              {{ consumerName().substring(0,2) }}
-            </div>
-            <div class="flex flex-col text-xs leading-none">
-              <span (click)="goTo('/profile')" class="text-white font-semibold hover:underline cursor-pointer">{{ consumerName() }}</span>
-              <span class="text-stone-500 mt-1">Settings</span>
-            </div>
-          </div>
-          <button (click)="logout()" class="text-left text-xs font-semibold hover:text-white flex items-center gap-2 text-stone-500 transition-all cursor-pointer">
-            <span>🚪</span> Sign Out
-          </button>
-        </div>
-      </aside>
-
-      <!-- Main Workspace -->
-      <main class="flex-1 flex flex-col">
-        <!-- Top Header -->
-        <header class="bg-white border-b border-stone-200/60 p-6 flex justify-between items-center">
-          <h1 class="text-2xl font-extrabold tracking-tight">Privacy & Settings</h1>
-        </header>
-
-        <!-- Content Area -->
-        <div class="p-6 md:p-8 flex-1 flex flex-col gap-8 max-w-4xl">
-          
-          <!-- POPIA Consents Section -->
-          <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-            <h3 class="font-extrabold text-lg text-stone-900 border-b border-stone-100 pb-2">POPIA Consents Management</h3>
-            <p class="text-xs text-stone-500 leading-relaxed">
-              Review and manage the active consents granted for data processing and bureau checks. In accordance with POPIA rules, withdrawing essential consents will restrict active credit facility actions.
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <!-- Marketing consent -->
+          <div class="border border-line rounded-sm p-6 flex flex-col gap-3">
+            <h2 class="font-heading text-3xl text-ink">Marketing consent</h2>
+            <p class="font-body text-base leading-relaxed text-ink-soft">
+              Control whether Kalahari may send you newsletters and credit-literacy updates. Every
+              change is recorded in the append-only consent log.
             </p>
-
-            <div class="flex flex-col gap-4 mt-2">
-              <!-- Consent Row 1: Marketing -->
-              <div class="flex items-center justify-between p-4 bg-stone-50 border border-stone-200 rounded-2xl">
-                <div class="flex flex-col gap-1 pr-6">
-                  <span class="text-sm font-bold text-stone-900">Promotional Marketing</span>
-                  <span class="text-[10px] text-stone-400">Receive promotional notifications and newsletters.</span>
-                </div>
-                <button (click)="toggleConsent('MARKETING')" [class.bg-emerald-600]="marketingGranted()" [class.text-white]="marketingGranted()" class="text-xs font-bold py-2 px-4 rounded-xl border border-stone-300 transition-all cursor-pointer">
-                  {{ marketingGranted() ? 'Consent Active' : 'Withdrawn' }}
-                </button>
-              </div>
-
-              <!-- Consent Row 2: Bureau Enquiry -->
-              <div class="flex items-center justify-between p-4 bg-stone-50 border border-stone-200 rounded-2xl opacity-80">
-                <div class="flex flex-col gap-1 pr-6">
-                  <span class="text-sm font-bold text-stone-900">Credit Bureau Enquiries</span>
-                  <span class="text-[10px] text-stone-400">Allows us to assess affordability in credit quote checks (Mandatory for credit).</span>
-                </div>
-                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100">
-                  Required
-                </span>
-              </div>
+            <div class="flex items-center gap-4">
+              <span class="inline-flex items-center gap-2 bg-surface-tint rounded-sm px-2.5 py-1.5">
+                <span class="h-2 w-2 rounded-full" [class]="marketingGranted() ? 'bg-accent' : 'bg-line'"></span>
+                <span class="font-caption text-xs font-bold text-ink">{{ marketingGranted() ? 'Granted' : 'Withdrawn' }}</span>
+              </span>
+              <button
+                (click)="toggleConsent('MARKETING')"
+                class="border border-line hover:border-accent text-ink font-caption text-xs font-semibold px-4 py-2.5 rounded-sm transition-colors cursor-pointer"
+              >
+                {{ marketingGranted() ? 'Withdraw consent' : 'Grant consent' }}
+              </button>
             </div>
           </div>
 
-          <!-- POPIA DSAR Section -->
-          <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-            <h3 class="font-extrabold text-lg text-stone-900 border-b border-stone-100 pb-2">Subject Access Request (DSAR)</h3>
-            <p class="text-xs text-stone-500 leading-relaxed">
-              Request a full export of the personal information stored in our databases, including encrypted values (decrypted for you), consent logs, and voucher listings.
+          <!-- DSAR -->
+          <div class="border border-line rounded-sm p-6 flex flex-col gap-3">
+            <h2 class="font-heading text-3xl text-ink">Subject access request (DSAR)</h2>
+            <p class="font-body text-base leading-relaxed text-ink-soft">
+              Request a full export of the personal information we store — profile fields, consent
+              logs, and voucher listings — as a POPIA data subject access request.
             </p>
-
-            <button (click)="downloadData()" [disabled]="exporting()" class="w-fit bg-stone-900 hover:bg-stone-850 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all cursor-pointer text-xs mt-2 disabled:opacity-50">
-              {{ exporting() ? 'Compiling JSON...' : 'Download My Personal Data (JSON)' }}
+            <button (click)="downloadData()" [disabled]="exporting()" class="${BUTTON} w-fit">
+              {{ exporting() ? 'Compiling JSON…' : 'Download my personal data' }}
             </button>
           </div>
-
         </div>
-      </main>
-    </div>
+      </div>
+    </app-portal-shell>
   `,
 })
 export class ProfileComponent implements OnInit {
   private http = inject(HttpClient);
-  private router = inject(Router);
 
   consumerId = signal<string>('consumer-uuid');
-  consumerName = signal<string>('Thabo Mollo');
+  consumerName = signal<string>('Student member');
 
   marketingGranted = signal(false);
   exporting = signal(false);
@@ -155,7 +116,7 @@ export class ProfileComponent implements OnInit {
 
   toggleConsent(type: string) {
     const targetStatus = this.marketingGranted() ? 'WITHDRAWN' : 'GRANTED';
-    
+
     this.http.post(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}/consents`, {
       consentType: type,
       status: targetStatus,
@@ -163,7 +124,6 @@ export class ProfileComponent implements OnInit {
     }).subscribe({
       next: () => {
         this.marketingGranted.set(targetStatus === 'GRANTED');
-        alert(`Consent type ${type} successfully updated to ${targetStatus}.`);
       },
     });
   }
@@ -182,18 +142,8 @@ export class ProfileComponent implements OnInit {
         this.exporting.set(false);
       },
       error: () => {
-        alert('Failed to compile data export.');
         this.exporting.set(false);
       },
     });
-  }
-
-  goTo(path: string) {
-    this.router.navigate([path]);
-  }
-
-  logout() {
-    sessionStorage.clear();
-    this.router.navigate(['/apply']);
   }
 }

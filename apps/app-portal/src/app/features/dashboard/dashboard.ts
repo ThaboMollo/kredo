@@ -1,139 +1,137 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { PortalShellComponent } from '../../shared/portal-shell';
 import { environment } from '../../../environments/environment';
+
+interface FacilityState {
+  status: string;
+  totalLimit: number;
+  utilisedLimit: number;
+  available: number;
+}
+
+interface VoucherState {
+  merchantName: string;
+  amount: number;
+  status: string;
+  expiryDate: string;
+}
+
+const METRIC_LABEL = 'font-caption text-xs font-bold text-ink-soft';
+const METRIC_VALUE = 'font-heading text-3xl text-ink';
+const METRIC_NOTE = 'font-body text-[15px] text-ink-soft';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PortalShellComponent],
   template: `
-    <div class="min-h-screen bg-stone-50 text-stone-900 flex flex-col antialiased md:flex-row">
-      <!-- Sidebar Navigation -->
-      <aside class="w-full md:w-64 bg-stone-900 text-stone-400 p-6 flex flex-col justify-between border-r border-stone-800">
-        <div class="flex flex-col gap-8">
-          <div class="text-xl font-extrabold text-white tracking-tight flex items-center gap-2">
-            <span>Kredo</span><span class="text-primary font-bold text-2xl">.</span>
-          </div>
-
-          <nav class="flex flex-col gap-2 font-medium text-sm">
-            <a (click)="goTo('/dashboard')" class="flex items-center gap-3 bg-stone-800 text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>📊</span> Dashboard
-            </a>
-            <a (click)="goTo('/wallet')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>💳</span> Voucher Wallet
-            </a>
-            <a (click)="goTo('/repayments')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>💸</span> Repayments
-            </a>
-            <a (click)="goTo('/progress')" class="flex items-center gap-3 hover:bg-stone-800 hover:text-white px-4 py-3 rounded-xl transition-all cursor-pointer">
-              <span>📈</span> Credit Progress
-            </a>
-          </nav>
+    <app-portal-shell [status]="portalStatus()">
+      <!-- Dashboard header -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+        <div class="flex flex-col gap-2">
+          <span class="font-caption text-xs font-bold uppercase tracking-[0.14em] text-accent">
+            Welcome back{{ firstName() ? ', ' + firstName() : '' }}
+          </span>
+          <h1 class="font-heading text-4xl md:text-5xl leading-[1.05] text-ink">
+            Your credit-building workspace
+          </h1>
         </div>
+        <button
+          (click)="goTo('/wallet')"
+          class="bg-accent hover:opacity-90 text-cream font-caption text-sm font-semibold px-5 py-3.5 rounded-sm transition-opacity cursor-pointer shrink-0"
+        >
+          Request voucher
+        </button>
+      </div>
 
-        <div class="pt-6 border-t border-stone-800 flex flex-col gap-4">
-          <div class="flex items-center gap-3">
-            <div class="h-9 w-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-xs uppercase">
-              {{ consumerName().substring(0,2) }}
-            </div>
-            <div class="flex flex-col text-xs leading-none">
-              <span (click)="goTo('/profile')" class="text-white font-semibold hover:underline cursor-pointer">{{ consumerName() }}</span>
-              <span class="text-stone-500 mt-1">Student Member</span>
-            </div>
-          </div>
-          <button (click)="logout()" class="text-left text-xs font-semibold hover:text-white flex items-center gap-2 text-stone-500 transition-all cursor-pointer">
-            <span>🚪</span> Sign Out
-          </button>
+      <!-- Metrics -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="border border-line rounded-sm p-4.5 flex flex-col gap-1.5">
+          <span class="${METRIC_LABEL}">Available facility</span>
+          <span class="${METRIC_VALUE}">{{ facility() ? 'R ' + (facility()!.available / 100 | number : '1.0-0') : '—' }}</span>
+          <span class="${METRIC_NOTE}">
+            {{ facility() ? 'R ' + (facility()!.utilisedLimit / 100 | number : '1.0-0') + ' utilised' : 'No facility yet' }}
+          </span>
         </div>
-      </aside>
+        <div class="border border-line rounded-sm p-4.5 flex flex-col gap-1.5">
+          <span class="${METRIC_LABEL}">Next DebiCheck</span>
+          <span class="${METRIC_VALUE}">{{ nextBilling() ? (nextBilling() | date : 'd MMM') : '—' }}</span>
+          <span class="${METRIC_NOTE}">{{ planLabel() }}</span>
+        </div>
+        <div class="border border-line rounded-sm p-4.5 flex flex-col gap-1.5">
+          <span class="${METRIC_LABEL}">Voucher status</span>
+          <span class="${METRIC_VALUE}">{{ activeVouchers().length }} active</span>
+          <span class="${METRIC_NOTE}">{{ voucherNote() }}</span>
+        </div>
+        <div class="border border-line rounded-sm p-4.5 flex flex-col gap-1.5">
+          <span class="${METRIC_LABEL}">KYC status</span>
+          <span class="${METRIC_VALUE}">{{ kycLabel() }}</span>
+          <span class="${METRIC_NOTE}">{{ studentVerified() ? 'Student status verified' : 'Student status pending' }}</span>
+        </div>
+      </div>
 
-      <!-- Main Workspace -->
-      <main class="flex-1 flex flex-col">
-        <!-- Top Header -->
-        <header class="bg-white border-b border-stone-200/60 p-6 flex justify-between items-center">
-          <h1 class="text-2xl font-extrabold tracking-tight">Overview</h1>
-          <div class="flex items-center gap-4">
-            <span class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-              FICA Verified
-            </span>
-          </div>
-        </header>
+      <!-- Body: facility overview + action queue -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Facility overview panel -->
+        <div class="lg:col-span-6 bg-surface-tint rounded-sm p-7 flex flex-col gap-5">
+          <span class="font-caption text-xs font-bold uppercase tracking-[0.14em] text-accent">Facility</span>
+          <h2 class="font-heading text-3xl md:text-4xl leading-[1.05] text-ink">Keep the next action obvious.</h2>
+          <p class="font-body text-lg leading-relaxed text-ink-soft">
+            The dashboard shows limits and repayments from backend data only. Large drawdowns,
+            signing, and bank-detail changes require step-up authentication before the action
+            continues.
+          </p>
 
-        <!-- Content Area -->
-        <div class="p-6 md:p-8 flex-1 flex flex-col gap-6 max-w-5xl">
-          <!-- Balance Widget Cards -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Available Credit Facility -->
-            <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col gap-2">
-              <span class="text-xs font-bold text-stone-400 uppercase tracking-wider">Available Credit Limit</span>
-              <div class="text-3xl font-extrabold text-stone-900 mt-1">
-                R{{ (facilityLimit() - utilisedLimit()) / 100 | number:'1.2-2' }}
-              </div>
-              <p class="text-xs text-stone-500 mt-2">Revolving facility limit is capped at R{{ facilityLimit() / 100 | number }}</p>
-            </div>
-
-            <!-- Utilised Credit Facility -->
-            <div class="bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col gap-2">
-              <span class="text-xs font-bold text-stone-400 uppercase tracking-wider">Utilised Facility</span>
-              <div class="text-3xl font-extrabold text-stone-900 mt-1">
-                R{{ utilisedLimit() / 100 | number:'1.2-2' }}
-              </div>
-              <p class="text-xs text-stone-500 mt-2">Amount drawn down for active retailer vouchers.</p>
-            </div>
-
-            <!-- Outstanding Balance (Receivables) -->
-            <div class="bg-stone-900 text-white rounded-3xl p-6 shadow-md flex flex-col justify-between">
+          <div class="flex flex-col gap-3.5">
+            @for (bar of progressBars(); track bar.label) {
               <div class="flex flex-col gap-2">
-                <span class="text-xs font-bold text-stone-400 uppercase tracking-wider">Outstanding Balance</span>
-                <div class="text-3xl font-extrabold mt-1 text-white">
-                  R{{ outstandingReceivable() / 100 | number:'1.2-2' }}
+                <div class="flex justify-between gap-3">
+                  <span class="font-caption text-xs font-bold text-ink">{{ bar.label }}</span>
+                  <span class="font-caption text-xs font-bold text-ink-soft">{{ bar.display }}</span>
+                </div>
+                <div class="h-2 bg-line rounded-none overflow-hidden">
+                  <div class="h-full bg-accent" [style.width.%]="bar.percent"></div>
                 </div>
               </div>
-              <button *ngIf="outstandingReceivable() > 0" (click)="triggerPayNow()" class="bg-primary hover:bg-primary/95 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow transition-all w-fit mt-4 cursor-pointer">
-                Pay Now
-              </button>
-            </div>
-          </div>
-
-          <!-- Quick Actions & Timeline -->
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            <!-- Active Vouchers Wallet Overview -->
-            <div class="lg:col-span-8 bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-              <div class="flex justify-between items-center border-b border-stone-100 pb-3">
-                <h3 class="font-extrabold text-stone-950">Active Vouchers</h3>
-                <button class="text-xs font-semibold text-primary hover:underline cursor-pointer">Go to Wallet →</button>
-              </div>
-              <div class="py-4 text-center text-stone-400 text-sm flex flex-col items-center gap-2">
-                <span>🎫</span>
-                <span>You have no active vouchers. Click "Voucher Wallet" to draw down from your limit.</span>
-              </div>
-            </div>
-
-            <!-- Credit Progress Sidebar -->
-            <div class="lg:col-span-4 bg-white border border-stone-200 rounded-3xl p-6 shadow-sm flex flex-col gap-4">
-              <div class="border-b border-stone-100 pb-3">
-                <h3 class="font-extrabold text-stone-950">Credit Standing</h3>
-              </div>
-              <div class="flex flex-col gap-3">
-                <div class="flex justify-between text-xs font-semibold">
-                  <span class="text-stone-500">Repayment streak</span>
-                  <span class="text-emerald-600">0 Months</span>
-                </div>
-                <div class="flex justify-between text-xs font-semibold">
-                  <span class="text-stone-500">Bureaus files submitted</span>
-                  <span class="text-stone-600">None</span>
-                </div>
-                <div class="bg-stone-50 border border-stone-200/60 p-4 rounded-2xl text-[10px] text-stone-500 leading-normal mt-2">
-                  Maintain prompt repayment behavior to build positive credit reports. Reports compile monthly on the 1st.
-                </div>
-              </div>
-            </div>
+            }
           </div>
         </div>
-      </main>
-    </div>
+
+        <!-- Action queue panel -->
+        <div class="lg:col-span-6 flex flex-col gap-4">
+          <div class="border border-line rounded-sm p-6 flex flex-col gap-3">
+            <h3 class="font-heading text-3xl text-ink">Required actions</h3>
+            @for (action of requiredActions(); track action.label) {
+              <div class="flex items-center gap-3.5 border-b border-line py-3 last:border-b-0">
+                <span class="inline-flex items-center gap-2 bg-surface-tint rounded-sm px-2.5 py-1.5 shrink-0">
+                  <span class="h-2 w-2 rounded-full bg-accent"></span>
+                  <span class="font-caption text-xs font-bold text-ink">{{ action.status }}</span>
+                </span>
+                <a (click)="goTo(action.path)" class="font-body text-lg text-ink cursor-pointer hover:text-accent transition-colors">
+                  {{ action.label }}
+                </a>
+              </div>
+            }
+          </div>
+
+          <div class="border border-line rounded-sm p-6 flex flex-col gap-3">
+            <h3 class="font-heading text-3xl text-ink">Recent activity</h3>
+            @if (recentActivity().length === 0) {
+              <p class="font-body text-base text-ink-soft">No ledger activity yet. Draw down your first voucher to get started.</p>
+            }
+            @for (entry of recentActivity(); track entry.label) {
+              <div class="flex items-center justify-between gap-4">
+                <span class="font-body text-lg text-ink">{{ entry.label }}</span>
+                <span class="font-caption text-sm font-bold text-accent">{{ entry.amount }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </app-portal-shell>
   `,
 })
 export class DashboardComponent implements OnInit {
@@ -141,12 +139,103 @@ export class DashboardComponent implements OnInit {
   private router = inject(Router);
 
   consumerId = signal<string>('consumer-uuid');
-  consumerName = signal<string>('Thabo Mollo');
-  
-  // Credit Telemetry (in cents)
-  facilityLimit = signal(150000); // R1 500.00 default
-  utilisedLimit = signal(0);
-  outstandingReceivable = signal(0);
+  firstName = signal<string>('');
+  kycStatus = signal<string>('PENDING');
+  studentVerified = signal<boolean>(false);
+
+  facility = signal<FacilityState | null>(null);
+  vouchers = signal<VoucherState[]>([]);
+  planCode = signal<string | null>(null);
+  nextBilling = signal<string | null>(null);
+
+  activeVouchers = computed(() => this.vouchers().filter((v) => v.status === 'ISSUED'));
+
+  portalStatus = computed(() => {
+    if (this.facility()) return 'Facility active';
+    if (this.kycStatus() === 'VERIFIED') return 'KYC verified';
+    return 'Getting started';
+  });
+
+  kycLabel = computed(() => {
+    switch (this.kycStatus()) {
+      case 'VERIFIED': return 'Verified';
+      case 'MANUAL_REVIEW': return 'In review';
+      default: return 'Pending';
+    }
+  });
+
+  planLabel = computed(() => {
+    switch (this.planCode()) {
+      case 'STUDENT_PREMIUM': return 'Builder plan · R99 scheduled';
+      case 'STUDENT_BASIC': return 'Starter plan · R59 scheduled';
+      default: return 'No subscription yet';
+    }
+  });
+
+  voucherNote = computed(() => {
+    const active = this.activeVouchers();
+    if (active.length === 0) return 'No active vouchers';
+    const soonest = active
+      .map((v) => new Date(v.expiryDate).getTime())
+      .sort((a, b) => a - b)[0];
+    const days = Math.max(0, Math.ceil((soonest - Date.now()) / 86400000));
+    return `Expires in ${days} days`;
+  });
+
+  progressBars = computed(() => {
+    const facility = this.facility();
+    const used = facility && facility.totalLimit > 0
+      ? Math.round((facility.utilisedLimit / facility.totalLimit) * 100)
+      : 0;
+    const redeemed = this.vouchers().filter((v) => v.status === 'REDEEMED').length;
+    const voucherTotal = this.vouchers().length;
+    const profileScore =
+      25 +
+      (this.kycStatus() === 'VERIFIED' ? 25 : 0) +
+      (this.studentVerified() ? 25 : 0) +
+      (facility ? 25 : 0);
+
+    return [
+      { label: 'Facility used', display: `${used}%`, percent: used },
+      {
+        label: 'Vouchers redeemed',
+        display: `${redeemed} of ${voucherTotal}`,
+        percent: voucherTotal > 0 ? (redeemed / voucherTotal) * 100 : 0,
+      },
+      { label: 'Profile complete', display: `${profileScore}%`, percent: profileScore },
+    ];
+  });
+
+  requiredActions = computed(() => {
+    const actions: { label: string; status: string; path: string }[] = [];
+    if (this.kycStatus() !== 'VERIFIED') {
+      actions.push({ label: 'Complete identity verification', status: 'Start now', path: '/apply' });
+    }
+    if (!this.planCode()) {
+      actions.push({ label: 'Choose a subscription plan', status: 'Up next', path: '/subscribe' });
+    }
+    if (!this.facility()) {
+      actions.push({ label: 'Apply for your credit facility', status: 'Ready to continue', path: '/credit' });
+    } else {
+      actions.push({ label: 'Request a retailer voucher', status: 'Ready to continue', path: '/wallet' });
+      actions.push({ label: 'Review your repayment schedule', status: 'Scheduled', path: '/repayments' });
+    }
+    return actions;
+  });
+
+  recentActivity = computed(() => {
+    const entries = this.vouchers().slice(0, 3).map((v) => ({
+      label: v.status === 'REDEEMED' ? `Voucher redeemed · ${v.merchantName}` : `Voucher issued · ${v.merchantName}`,
+      amount: `R${Math.round(v.amount / 100)}`,
+    }));
+    if (this.planCode()) {
+      entries.push({
+        label: 'Subscription fee',
+        amount: this.planCode() === 'STUDENT_PREMIUM' ? 'R99' : 'R59',
+      });
+    }
+    return entries;
+  });
 
   ngOnInit() {
     const storedId = sessionStorage.getItem('kredo_consumer_id');
@@ -154,46 +243,49 @@ export class DashboardComponent implements OnInit {
       this.consumerId.set(storedId);
     }
     this.fetchProfile();
-    this.fetchLedgerBalance();
+    this.fetchFacility();
+    this.fetchSubscription();
+    this.fetchVouchers();
   }
 
   private fetchProfile() {
     this.http.get<any>(`${environment.apiBaseUrl}/api/v1/consumers/${this.consumerId()}`).subscribe({
       next: (res) => {
-        this.consumerName.set(`${res.firstName} ${res.lastName}`);
+        this.firstName.set(res.firstName || '');
+        this.kycStatus.set(res.kycStatus || 'PENDING');
+        this.studentVerified.set(!!res.studentVerified);
       },
     });
   }
 
-  private fetchLedgerBalance() {
-    // Check active subscription limits
-    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/subscriptions/status?consumerId=${this.consumerId()}`).subscribe({
+  private fetchFacility() {
+    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/credit/facility?consumerId=${this.consumerId()}`).subscribe({
       next: (res) => {
-        if (res.planCode === 'STUDENT_PREMIUM') {
-          this.facilityLimit.set(350000); // R3 500.00 limit
+        if (res.status === 'ACTIVE') {
+          this.facility.set(res);
         }
       },
     });
   }
 
-  triggerPayNow() {
-    this.http.post<any>(`${environment.apiBaseUrl}/api/v1/repayments/pay-now`, {
-      consumerId: this.consumerId(),
-      amount: this.outstandingReceivable(),
-    }).subscribe({
+  private fetchSubscription() {
+    this.http.get<any>(`${environment.apiBaseUrl}/api/v1/subscriptions/status?consumerId=${this.consumerId()}`).subscribe({
       next: (res) => {
-        // Redirect to mocked PSP checkout
-        window.open(res.checkoutUrl, '_blank');
+        if (res.status && res.status !== 'NONE') {
+          this.planCode.set(res.planCode);
+          this.nextBilling.set(res.nextBilling);
+        }
       },
+    });
+  }
+
+  private fetchVouchers() {
+    this.http.get<VoucherState[]>(`${environment.apiBaseUrl}/api/v1/credit/vouchers?consumerId=${this.consumerId()}`).subscribe({
+      next: (list) => this.vouchers.set(list || []),
     });
   }
 
   goTo(path: string) {
     this.router.navigate([path]);
-  }
-
-  logout() {
-    sessionStorage.clear();
-    this.router.navigate(['/apply']);
   }
 }
