@@ -4,9 +4,9 @@ import "./globals.css";
 import AttributionTracker from "@/components/AttributionTracker";
 
 export const metadata: Metadata = {
-  title: "Kalahari — Build Credit History Before Graduation",
+  title: "Kalahari Technology Holdings — Integrated Digital Platforms",
   description:
-    "Ditch predatory micro-loans. Build an official credit profile as a student with our partner-store subscription facilities.",
+    "Technology solutions for retail, hospitality, and supply chain operations: POS and payment systems, EWM integration, contactless hospitality tools, and custom platform development.",
 };
 
 export default function RootLayout({

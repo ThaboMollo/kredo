@@ -117,8 +117,8 @@ export default function WaitlistForm() {
         value={formData.university}
         onChange={(e) => setFormData({ ...formData, university: e.target.value })}
         className={fieldClasses}
-        placeholder="Campus / institution"
-        aria-label="Campus / institution"
+        placeholder="Company / campus / institution"
+        aria-label="Company, campus, or institution"
       />
 
       <label className="flex items-start gap-3 cursor-pointer mt-1">

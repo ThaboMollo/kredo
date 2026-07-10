@@ -2,7 +2,8 @@ import React from 'react';
 import PortalCTA from '@/components/PortalCTA';
 
 const navLinks = [
-  { href: '/how-it-works', label: 'How it works' },
+  { href: '/solutions', label: 'Solutions' },
+  { href: '/how-it-works', label: 'Kredo credit' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/trust', label: 'Trust & compliance' },
 ];

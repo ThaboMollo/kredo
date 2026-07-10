@@ -11,7 +11,7 @@ export default function SiteFooter() {
           <a href="/legal" className="hover:text-cream transition-colors">PAIA manual</a>
           <a href="/trust" className="hover:text-cream transition-colors">NCR information</a>
         </div>
-        <p className="font-body text-sm text-cream/60">© 2026 Kalahari. All rights reserved.</p>
+        <p className="font-body text-sm text-cream/60">© 2026 Kalahari Technology Holdings. All rights reserved.</p>
       </div>
     </footer>
   );
